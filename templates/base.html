@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinéflix</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Author:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=More+Sugar&display=swap" rel="stylesheet">
+
+</head>
+<body style="background-image: url('/static/header_bg.jpeg');" class="bg-cover bg-center bg-no-repeat bg-fixed flex flex-col min-h-screen font-author">
+    <header class="fixed top-0 w-full backdrop-blur-md">
+    <nav class="relative w-full flex items-center justify-between px-10 text-white">
+        
+        <!-- Logo -->
+        <div class="w-38 min-w-20 max-w-38">
+            <a href="/">
+                <img src="/static/logo.png" alt="logo">
+            </a>
+        </div>
+
+        <!-- Liens CENTRÉS -->
+        <div class="absolute left-1/2 -translate-x-1/2 flex items-center">
+            <a href="/#" class="px-4">Accueil</a>
+            <a href="/films" class="px-4">Films</a>
+            <a href="/series" class="px-4">Séries</a>
+            <a href="/tendances" class="px-4">Tendances</a>
+        </div>
+
+        <!-- Search + Connexion -->
+        <div class="flex items-center space-x-4">
+            <input
+                type="search"
+                placeholder="🔍 Recherchez un film"
+                class="px-4 py-2 rounded-full text-white backdrop-blur-xl border-2 border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            >
+            <a href="/connexion">Connexion</a>
+        </div>
+
+    </nav>
+</header>
+
+
+
+    <main class="flex-grow pt-32 px-12 text-2xl text-white text-center pb-30">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-[#141414] text-white px-5 py-10 font-author">
+    <!-- Conteneur des 3 colonnes -->
+    <div class="grid grid-cols-3 items-center max-w-7xl mx-auto min-h-[300px]">
+        <!-- Colonne gauche -->
+        <div>
+            <h2 class="text-5xl font-extrabold leading-tight font-author">
+                DÉCOUVREZ<br>
+                VOTRE <span class="font-sugar text-red-500">FILM</span><br>
+                PRÉFÉRÉ.
+            </h2>
+
+            <button class="mt-6 bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full font-semibold">
+                C’est parti!
+            </button>
+        </div>
+        <!-- Colonne centrale -->
+        <div class="flex justify-center">
+            <img
+                class="h-64 object-contain drop-shadow-xl"
+                alt="Oscar"
+                src="/static/oscar.png"
+            >
+        </div>
+        <!-- Colonne droite -->
+        <div class="flex flex-col items-end">
+            <h3 class="text-xl font-semibold mb-4">Navigation</h3>
+
+            <ul class="space-y-2 text-sm text-right">
+                <li class="hover:text-gray-300 cursor-pointer">Accueil</li>
+                <li class="hover:text-gray-300 cursor-pointer">Catalogue</li>
+                <li class="hover:text-gray-300 cursor-pointer">Connexion</li>
+                <li class="hover:text-gray-300 cursor-pointer">Créer un compte</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Bas de footer -->
+    <div class="mt-12 text-sm text-gray-400 text-left max-w-7xl mx-auto">
+        Cinéflix © 2026 · Tous droits réservés
+    </div>
+</footer>
+</body>
+</html>
