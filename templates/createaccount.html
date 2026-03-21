@@ -12,7 +12,7 @@
         </h1>
 
         <p class="text-center text-gray-300">
-            Connectez-vous pour retrouver vos films & séries favoris.
+            Créez votre compte pour retrouver vos films & séries favoris.
         </p>
 
         <!-- EMAIL -->
@@ -48,17 +48,33 @@
             </div>
         </div>
 
+        <!-- PASSWORD CONFIRMATION -->
+        <div class="flex flex-col gap-2">
+            <label class="text-sm text-gray-400">CONFIRMER LE MOT DE PASSE</label>
+
+            <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
+                
+                <img src="{{ url_for('static', filename='verrouiller.png') }}" class="w-5 h-5 mr-3 opacity-70">
+
+                <input 
+                    type="password" 
+                    placeholder="Confirmez votre mot de passe"
+                    class="bg-transparent w-full outline-none text-white placeholder-gray-500"
+                >
+            </div>
+        </div>
+
 
         <!-- BUTTON -->
         <button class="mt-4 w-full bg-red-600 hover:bg-red-700 transition py-3 rounded-xl font-semibold">
-            Se connecter
+            Créer un compte
         </button>
 
 
         <!-- SIGN UP -->
         <p class="text-center text-gray-400 text-sm">
-            Vous n'avez pas encore de compte ?
-            <a href="/creer-compte" class="text-red-500 hover:underline">Créer un compte</a>
+            Vous avez déjà un compte ?
+            <a href="/connexion" class="text-red-500 hover:underline">Se connecter</a>
         </p>
 
     </div>

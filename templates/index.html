@@ -2,7 +2,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-5xl font-bold">Cherchez moins, regardez plus.</h1>
+    <h1 class="text-5xl font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+        Cherchez moins, regardez plus.
+    </h1>
     <br>
     <h3>Découvrez l’avis de milliers de fans comme vous.  </h3>
 
@@ -10,5 +12,43 @@
     <button class="mt-6 w-40 bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full font-semibold text-base">
         C’est parti!
     </button>
+
+<div class="w-full mt-20 p-0">
+<h2 class="text-3xl font-bold text-white pt-60 pb-10 ">
+        Découvrez vos films préférés <span class="inline-block ml-2">💖</span>
+    </h2>
+
+    <div class="relative inline-block text-left">
+        <select class="bg-[#2D2D3A] text-white px-6 py-2 rounded-full border-none outline-none appearance-none pr-10 cursor-pointer hover:bg-[#3D3D4A] transition">
+            <option value="">Choisir ↓</option>
+            <option value="">Action</option>
+            <option value="drame">Drame</option>
+            <option value="comedie">Comédie</option>
+            <option value="sf">Science-Fiction</option>
+        </select>
+    </div>
+
+    <h1 class="text-2xl font-bold text-white">Les plus populaires🔥</h1>
+    <section class="grid grid-cols-4 gap-10 px-5">
+    
+    {% for film in films %}
+        <article class="flex flex-col items-center break-words">
+            <div class="w-full aspect-[2/3] mb-4">
+                <img src="{{ film['poster'] }}" 
+                    alt="{{ film['titre'] }}" 
+                    class="w-full h-full object-cover rounded-[2rem] shadow-md">
+            </div>
+
+            <div class="text-center">
+                <h3 class="text-red-700 font-medium leading-tight"> {{ film["titre"] }} </h3>
+                <h4 class="text-red-700 text-sm"> {{ film["realisateur"] }} </h4>
+                <h4 class="text-red-700 text-sm opacity-80"> {{ film["date"] }} </h4>
+            </div>
+        </article>
+    {% endfor %}
+    </section>
+
+</div>
+    
 
 {% endblock %}

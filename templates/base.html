@@ -13,7 +13,7 @@
 
 </head>
 <body style="background-image: url('/static/header_bg.jpeg');" class="bg-cover bg-center bg-no-repeat bg-fixed flex flex-col min-h-screen font-author">
-    <header class="fixed top-0 w-full backdrop-blur-md">
+    <header class="fixed top-0 w-full backdrop-blur-md z-50 bg-black/20">
     <nav class="relative w-full flex items-center justify-between px-10 text-white">
         
         <!-- Logo -->
@@ -63,7 +63,7 @@
             </h2>
 
             <button class="mt-6 bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full font-semibold">
-                C’est parti!
+                <a href="/tendances">C'est Parti!</a>
             </button>
         </div>
         <!-- Colonne centrale -->
@@ -79,10 +79,10 @@
             <h3 class="text-xl font-semibold mb-4">Navigation</h3>
 
             <ul class="space-y-2 text-sm text-right">
-                <li class="hover:text-gray-300 cursor-pointer">Accueil</li>
-                <li class="hover:text-gray-300 cursor-pointer">Catalogue</li>
-                <li class="hover:text-gray-300 cursor-pointer">Connexion</li>
-                <li class="hover:text-gray-300 cursor-pointer">Créer un compte</li>
+                <li class="hover:text-gray-300 cursor-pointer"><a href="/">Accueil</a></li>
+                <li class="hover:text-gray-300 cursor-pointer"><a href="/films">Catalogue</a></li>
+                <li class="hover:text-gray-300 cursor-pointer"><a href="/connexion">Connexion</a></li>
+                <li class="hover:text-gray-300 cursor-pointer"><a href="/creer-compte">Créer un compte</a></li>
             </ul>
         </div>
     </div>

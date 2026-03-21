@@ -1,5 +1,39 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
-
 {% block content %}
+
+
+<div class="bg-black w-full">
+    <div class="w-full flex justify-between">
+        <h1 class="text-5xl font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+            Découvrez vos films préférés <span class="inline-block ml-2">💖</span>
+        </h1>
+
+        <div class="relative inline-block text-left">
+            <select class="bg-[#2D2D3A] text-white px-6 py-2 rounded-full border-none outline-none appearance-none pr-10 cursor-pointer hover:bg-[#3D3D4A] transition">
+                <option value="">Choisir ↓</option>
+                <option value="">Action</option>
+                <option value="drame">Drame</option>
+                <option value="comedie">Comédie</option>
+                <option value="sf">Science-Fiction</option>
+            </select>
+        </div>
+    </div>
+
+    {% for film in films %}
+        <article class="flex flex-col items-center break-words">
+            <div class="w-40">
+                <img src="{{ film['poster'] }}" 
+                    alt="poster du film" 
+                    class="w-full h-full object-cover rounded-[2rem] shadow-md">
+            </div>
+
+            <div class="text-center">
+                <h3 class="text-red-700 font-medium leading-tight"> {{ film["titre"] }} </h3>
+                <h4 class="text-red-700 text-sm"> {{ film["realisateur"] }} </h4>
+                <h4 class="text-red-700 text-sm opacity-80"> {{ film["date"] }} </h4>
+            </div>
+        </article>
+    {% endfor %}
+</div>
 {% endblock %}
