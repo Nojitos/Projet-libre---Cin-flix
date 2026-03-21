@@ -15,60 +15,71 @@
             Créez votre compte pour retrouver vos films & séries favoris.
         </p>
 
-        <!-- EMAIL -->
-        <div class="flex flex-col gap-2">
-            <label class="text-sm text-gray-400">ADRESSE EMAIL</label>
+        {% if error is not none %}
+        <h1>{{ error }}</h1>
+        {% endif %}
 
-            <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
-                
-                <img src="{{ url_for('static', filename='e-mail.png') }}" class="w-5 h-5 mr-3 opacity-70">
+        <form method="POST" action="{{ url_for('creer_compte') }}">
 
-                <input 
-                    type="email" 
-                    placeholder="votre@email.com"
-                    class="bg-transparent w-full outline-none text-white placeholder-gray-500"
-                >
+            <!-- EMAIL -->
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-gray-400">ADRESSE EMAIL</label>
+
+                <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
+                    
+                    <img src="{{ url_for('static', filename='e-mail.png') }}" class="w-5 h-5 mr-3 opacity-70">
+
+                    <input 
+                        type="email" 
+                        placeholder="votre@email.com"
+                        class="bg-transparent w-full outline-none text-white placeholder-gray-500"
+                        name="email"
+                    >
+                </div>
             </div>
-        </div>
 
 
-        <!-- PASSWORD -->
-        <div class="flex flex-col gap-2">
-            <label class="text-sm text-gray-400">MOT DE PASSE</label>
+            <!-- PASSWORD -->
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-gray-400">MOT DE PASSE</label>
 
-            <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
-                
-                <img src="{{ url_for('static', filename='verrouiller.png') }}" class="w-5 h-5 mr-3 opacity-70">
+                <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
+                    
+                    <img src="{{ url_for('static', filename='verrouiller.png') }}" class="w-5 h-5 mr-3 opacity-70">
 
-                <input 
-                    type="password" 
-                    placeholder="Votre mot de passe"
-                    class="bg-transparent w-full outline-none text-white placeholder-gray-500"
-                >
+                    <input 
+                        type="password" 
+                        placeholder="Votre mot de passe"
+                        class="bg-transparent w-full outline-none text-white placeholder-gray-500"
+                        name="mdp"
+                    >
+                </div>
             </div>
-        </div>
 
-        <!-- PASSWORD CONFIRMATION -->
-        <div class="flex flex-col gap-2">
-            <label class="text-sm text-gray-400">CONFIRMER LE MOT DE PASSE</label>
+            <!-- PASSWORD CONFIRMATION -->
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-gray-400">CONFIRMER LE MOT DE PASSE</label>
 
-            <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
-                
-                <img src="{{ url_for('static', filename='verrouiller.png') }}" class="w-5 h-5 mr-3 opacity-70">
+                <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
+                    
+                    <img src="{{ url_for('static', filename='verrouiller.png') }}" class="w-5 h-5 mr-3 opacity-70">
 
-                <input 
-                    type="password" 
-                    placeholder="Confirmez votre mot de passe"
-                    class="bg-transparent w-full outline-none text-white placeholder-gray-500"
-                >
+                    <input 
+                        type="password" 
+                        placeholder="Confirmez votre mot de passe"
+                        class="bg-transparent w-full outline-none text-white placeholder-gray-500"
+                        name="mdp_confirm"
+                    >
+                </div>
             </div>
-        </div>
 
 
-        <!-- BUTTON -->
-        <button class="mt-4 w-full bg-red-600 hover:bg-red-700 transition py-3 rounded-xl font-semibold">
-            Créer un compte
-        </button>
+            <!-- BUTTON -->
+            <button type="submit" class="mt-4 w-full bg-red-600 hover:bg-red-700 transition py-3 rounded-xl font-semibold">
+                Créer un compte
+            </button>
+        
+        </form>
 
 
         <!-- SIGN UP -->

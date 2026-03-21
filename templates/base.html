@@ -38,7 +38,11 @@
                 placeholder="🔍 Recherchez un film"
                 class="px-4 py-2 rounded-full text-white backdrop-blur-xl border-2 border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
+            {% if utilisateur == none %}
             <a href="/connexion">Connexion</a>
+            {% else %}
+            <a href="/deconnexion">Déconnexion</a>
+            {% endif %}
         </div>
 
     </nav>
