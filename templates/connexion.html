@@ -16,23 +16,29 @@
         </p>
 
         {% if error is not none %}
-        <h1>{{ error }}</h1>
+        <div class="text-red-600 text-sm font-medium mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+            </svg>
+            <span>{{ error }}</span>
+        </div>
         {% endif %}
 
         <form method="POST" action="{{ url_for('connexion') }}">
 
-            <!-- EMAIL -->
+            <!-- PSEUDO -->
             <div class="flex flex-col gap-2">
-                <label class="text-sm text-gray-400">ADRESSE EMAIL</label>
+                <label class="text-sm text-gray-400">PSEUDO</label>
 
                 <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
                     
-                    <img src="{{ url_for('static', filename='e-mail.png') }}" class="w-5 h-5 mr-3 opacity-70">
+                    <img src="{{ url_for('static', filename='pseudo.png') }}" class="w-5 h-5 mr-3 opacity-70">
 
                     <input 
-                        type="email" 
-                        placeholder="votre@email.com"
+                        type="text" 
+                        placeholder="Votre pseudo"
                         class="bg-transparent w-full outline-none text-white placeholder-gray-500"
+                        name="pseudo"
                     >
                 </div>
             </div>
@@ -52,6 +58,7 @@
                         class="bg-transparent w-full outline-none text-white placeholder-gray-500"
                         method="POST"
                         action=""
+                        name="mdp"
                     >
                 </div>
             </div>
