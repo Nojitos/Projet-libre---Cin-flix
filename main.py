@@ -31,17 +31,7 @@ def utilisateur():
 @app.route("/")
 def index():
     films = [{
-        "poster": "/static/spiderman.jpg",
-        "titre": "Harry Potter",
-        "realisateur": "chai pas",
-        "date": "non plus"
-    }]
-    return render_template("index.html", films=films, utilisateur=utilisateur())
-
-@app.route("/films")
-def films():
-    films = [{
-        "poster": url_for('static', filename='harrypotter.png'),
+        "poster": url_for('static', filename='hp.jpg'),
         "titre": "Harry Potter",
         "realisateur": "Christopher Columbus",
         "date": "2001"
@@ -51,10 +41,43 @@ def films():
         "realisateur": "Sam Raimi",
         "date": "2002"
     },{
-        "poster":  url_for('static', filename='starwars.jpg'),
+        "poster":  url_for('static', filename='starwars.webp'),
         "titre": "Star Wars",
         "realisateur": "George Lucas",
         "date": "1977"
+    },
+    {
+        "poster":  url_for('static', filename='interstellar.jpg'),
+        "titre": "Interstellar",
+        "realisateur": "Christopher Nolan",
+        "date": "2014"
+    },
+    ]
+    return render_template("index.html", films=films, utilisateur=utilisateur())
+
+@app.route("/films")
+def films():
+    films = [{
+        "poster": url_for('static', filename='hp.jpg'),
+        "titre": "Harry Potter",
+        "realisateur": "Christopher Columbus",
+        "date": "2001"
+    },{
+        "poster": url_for('static', filename='spiderman.jpg'),
+        "titre": "Spider-Man",
+        "realisateur": "Sam Raimi",
+        "date": "2002"
+    },{
+        "poster":  url_for('static', filename='starwars.webp'),
+        "titre": "Star Wars",
+        "realisateur": "George Lucas",
+        "date": "1977"
+    },
+    {
+        "poster":  url_for('static', filename='interstellar.jpg'),
+        "titre": "Interstellar",
+        "realisateur": "Christopher Nolan",
+        "date": "2014"
     },
     ]
     return render_template("films.html", films=films, utilisateur=utilisateur())

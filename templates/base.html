@@ -92,8 +92,12 @@ html {
             <ul class="space-y-2 text-sm text-right">
                 <li class="hover:text-gray-300 cursor-pointer"><a href="/">Accueil</a></li>
                 <li class="hover:text-gray-300 cursor-pointer"><a href="/films">Catalogue</a></li>
+                {% if utilisateur == none %}
                 <li class="hover:text-gray-300 cursor-pointer"><a href="/connexion">Connexion</a></li>
-                <li class="hover:text-gray-300 cursor-pointer"><a href="/creer-compte">Créer un compte</a></li>
+                <li class="hover:text-gray-300 cursor-pointer"><a href="/creer_compte">Créer un compte</a></li>
+                {% else %}
+                <li class="hover:text-gray-300 cursor-pointer"><a href="/deconnexion">Déconnexion</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
