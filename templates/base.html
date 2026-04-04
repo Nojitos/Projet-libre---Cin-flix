@@ -50,6 +50,10 @@ html {
             {% else %}
             <a href="/deconnexion">Déconnexion</a>
             {% endif %}
+
+            {% if admin %}
+            <a href="/admin">Admin👑</a>
+            {% endif %}
         </div>
 
     </nav>
@@ -90,6 +94,7 @@ html {
             <h3 class="text-xl font-semibold mb-4">Navigation</h3>
 
             <ul class="space-y-2 text-sm text-right">
+                <li class="hover:text-gray-300 cursor-pointer"><a href="/admin">Admin👑</a></li>
                 <li class="hover:text-gray-300 cursor-pointer"><a href="/">Accueil</a></li>
                 <li class="hover:text-gray-300 cursor-pointer"><a href="/films">Catalogue</a></li>
                 {% if utilisateur == none %}

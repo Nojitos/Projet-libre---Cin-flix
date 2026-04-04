@@ -23,6 +23,7 @@ def utilisateur():
     """
     Renvoir le nom de l'utilisatuer si il est connecté, None sinon
     """
+    #Changer le nom de la clé "utilisateur" par "utilisateur_connecte" pour être plus clair
     if "utilisateur" in session:
         return session["utilisateur"]
     else :
@@ -126,7 +127,7 @@ def creer_compte():
             print("Les deux mots de passe doivent être les mêmes !")
             return render_template("createaccount.html", error="Les deux mots de passe doivent être les mêmes !", utilisateur=utilisateur())
         
-        # On vérifie si l'email existe déjà
+        # On vérifie si le pseudo existe déjà
         pseudo = request.form['pseudo']
         user=db_users.find_one({"pseudo":pseudo})
         if user :
@@ -166,10 +167,14 @@ def testfilm():
 
 @app.route("/admin")
 def admin():
+    for item in db_users.find():
+        print(item)
     # On ne peut accéder à la page qui si l'utilisateur est connecté et est dans la liste des admins
     if utilisateur() is not None and admin_collection.find_one({"pseudo": utilisateur()}) :
-        return render_template("admin.html", utilisateur=utilisateur())
+        print(db_users.find())
+        return render_template("admin.html", db_users=db_users.find(), utilisateur=utilisateur())
     return redirect(url_for("index"))
+    
 
 # Gestion de l'erreur 404
 @app.errorhandler(404)

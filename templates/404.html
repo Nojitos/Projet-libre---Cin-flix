@@ -6,10 +6,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
+{% extends "base.html" %}
+
+{% block content %}
 <body class="bg-[#0b0f1a] text-white font-sans min-h-screen flex items-center justify-center relative overflow-hidden">
 
     <!-- Posters -->
-<img src="{{ url_for('static', filename='harrypotter.jpg') }}" 
+<img src="{{ url_for('static', filename='hp.jpg') }}" 
      onerror="this.style.display='none'" 
      class="absolute top-16 left-20 w-40 rotate-[-20deg] rounded-xl shadow-2xl">
 
@@ -21,7 +24,7 @@
      onerror="this.style.display='none'" 
      class="absolute bottom-16 left-24 w-44 rotate-[20deg] rounded-xl shadow-2xl">
 
-<img src="{{ url_for('static', filename='starwars.jpg') }}" 
+<img src="{{ url_for('static', filename='starwars.webp') }}" 
      onerror="this.style.display='none'" 
      class="absolute bottom-16 right-24 w-44 rotate-[-15deg] rounded-xl shadow-2xl">
 
@@ -43,3 +46,4 @@
 
 </body>
 </html>
+{% endblock %}

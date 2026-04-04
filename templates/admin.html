@@ -2,20 +2,83 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="w-full h-screen flex flex-col items-start justify-start gap-10 bg-black text-white p-10">
 
-<h1 class="text-4xl font-bold">Administration🅰️</h1>
-    <p>Bienvenue dans le panel d'administration !</p>
+<div class="w-full min-h-screen bg-black text-white px-6 py-10">
 
-    <h2><strong>Gérez un utilisateur</strong></h2>
-    <div>
-        <form method="POST" action="/admin/user">
-            <input type="text" name="username" placeholder="Nom d'utilisateur" required class="p-2 rounded bg-gray-800 text-white">
-            <input type="email" name="email" placeholder="Email" required class="p-2 rounded bg-gray-800 text-white">
-            <input type="password" name="password" placeholder="Mot de passe" required class="p-2 rounded bg-gray-800 text-white">
-            <button type="submit" class="p-2 bg-blue-600 rounded">Créer l'utilisateur</button>
-        </form>
+    <!-- HEADER -->
+    <div class="max-w-6xl mx-auto mb-12">
+        <h1 class="text-4xl font-bold mb-2">Administration 🅰️</h1>
+        <p class="text-gray-400">Gérez les utilisateurs</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto space-y-16">
+
+        <!-- SECTION USERS -->
+        <section>
+            <h2 class="text-2xl font-semibold mb-6">👥 Utilisateurs</h2>
+
+            <!-- LISTE USERS -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for user in db_users %}
+                <div class="bg-gray-900 p-5 rounded-2xl shadow-lg hover:scale-105 transition duration-300 flex flex-col items-center">
+                    
+                    <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-xl font-bold mb-3">
+                        {{ user["pseudo"][0]|upper }}
+                    </div>
+
+                    <h3 class="font-medium">{{ user["pseudo"] }}</h3>
+
+                    <form method="POST" action="/admin/manage_user" class="mt-4">
+                        <input type="hidden" name="username" value="{{ user['pseudo'] }}">
+                        <button class="text-sm bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-full transition">
+                            Gérer
+                        </button>
+                    </form>
+
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- ACTION RAPIDE -->
+            <div class="mt-10 flex flex-col md:flex-row gap-4 items-center">
+                <form method="POST" action="/admin/manage_user" class="flex gap-3">
+                    <input type="text" name="username" placeholder="Nom d'utilisateur"
+                        class="px-4 py-2 rounded-full bg-gray-800 text-white focus:outline-none">
+                    
+                    <button class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-full transition">
+                        Gérer
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- SECTION CREATE USER -->
+        <section>
+            <h2 class="text-2xl font-semibold mb-6">Créer un utilisateur</h2>
+
+            <div class="bg-gray-900 p-8 rounded-2xl shadow-lg max-w-xl">
+
+                <form method="POST" action="{{ url_for('creer_compte') }}" class="flex flex-col gap-4">
+
+                    <input type="text" name="pseudo" placeholder="Nom d'utilisateur"
+                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+
+                    <input type="password" name="mdp" placeholder="Mot de passe"
+                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+
+                    <input type="password" name="mdp_confirm" placeholder="Confirmer le mot de passe"
+                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+
+                    <button class="bg-green-600 hover:bg-green-700 py-3 rounded-full font-semibold transition" type="submit">
+                        Créer l'utilisateur
+                    </button>
+
+                </form>
+
+            </div>
+        </section>
     </div>
 
 </div>
+
 {% endblock %}
