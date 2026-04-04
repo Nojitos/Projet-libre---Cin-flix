@@ -5,54 +5,66 @@
     <h1 class="text-5xl font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] pt-30 pb-10">
         Cherchez moins, regardez plus.
     </h1>
+
     {% if utilisateur != none %}
-    <h2 class="pb-10 ">Bonjour <span class="font-bold">{{ utilisateur }}</span> !!!</h2>
+    <h2 class="pb-10">Bonjour <span class="font-bold">{{ utilisateur }}</span> !!!</h2>
     {% endif %}
-    <h3>Découvrez l’avis de milliers de fans comme vous.  </h3>
+
+    <h3>Découvrez l’avis de milliers de fans comme vous.</h3>
+
     <button class="mt-6 w-40 bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full font-semibold text-base">
         <a href="#populaires">C’est parti!</a>
     </button>
 
-    <section id="populaires">  
-        <div class="w-full mt-20 p-0">
-
-            <h1 class="text-2xl font-bold text-white">Les plus populaires🔥</h1>
-            <section class="grid grid-cols-4 gap-10 px-5">
-            
-            <!-- CONTENEUR DES FILMS -->
-    <div class="flex gap-8 flex-wrap">
-
-        {% for film in films %}
-        <article class="flex flex-col items-center break-words w-40">
-            
-            <div class="w-40">
-                <img src="{{ film['poster'] }}" 
-                    alt="poster du film" 
-                    class="w-full h-full object-cover rounded-[2rem] shadow-md">
-            </div>
-
-            <div class="text-center mt-2">
-                <h3 class="text-red-700 font-medium leading-tight"> {{ film["titre"] }} </h3>
-                <h4 class="text-red-700 text-sm"> {{ film["realisateur"] }} </h4>
-                <h4 class="text-red-700 text-sm opacity-80"> {{ film["date"] }} </h4>
-            </div>
-
-        </article>
-        {% endfor %}
-
-    </div>
-
-    <button class="mt-6 bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full font-semibold">
-                <a href="/films">Voir +</a>
-            </button>
-    </section>
-
+    <!-- SECTION POPULAIRES -->
+    <section id="populaires" class="w-full bg-black mt-20 py-12">
         
-   
+        <div class="max-w-6xl mx-auto px-6">
+            
+            <h1 class="text-2xl font-bold text-white mb-10">
+                Les plus populaires🔥
+            </h1>
+
+            <!-- GRILLE FILMS -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+                
+                {% for film in films %}
+                <article class="flex flex-col items-center text-center">
+                    
+                    <div class="w-40">
+                        <img src="{{ film['poster'] }}" 
+                             alt="poster du film" 
+                             class="w-full h-full object-cover rounded-[2rem] shadow-md hover:scale-105 transition duration-300">
+                    </div>
+
+                    <div class="mt-3">
+                        <h3 class="text-red-600 font-medium leading-tight">
+                            {{ film["titre"] }}
+                        </h3>
+                        <h4 class="text-red-600 text-sm">
+                            {{ film["realisateur"] }}
+                        </h4>
+                        <h4 class="text-red-600 text-sm opacity-80">
+                            {{ film["date"] }}
+                        </h4>
+                    </div>
+
+                </article>
+                {% endfor %}
+
+            </div>
+
+            <!-- BOUTON CENTRÉ -->
+            <div class="flex justify-center mt-12">
+                <a href="/films">
+                    <button class="bg-red-600 hover:bg-red-700 transition px-8 py-3 rounded-full font-semibold">
+                        Voir +
+                    </button>
+                </a>
+            </div>
+
         </div>
 
     </section>
-
-    
 
 {% endblock %}
