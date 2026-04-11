@@ -188,12 +188,58 @@ def admin_route():
         return render_template("admin.html", db_users=db_users.find(), utilisateur=utilisateur(), admin=admin())
     return redirect(url_for("index"))
 
+@app.route("/creer_compte_admin", methods=["GET", "POST"])
+def creer_compte_admin():
+    if request.method == "GET":
+        return render_template("admin.html", error=None, utilisateur=utilisateur(), admin=admin())
+    else :
+        
+        # On vérifie que les deux mdp sont les mêmes
+        if request.form["mdp"] != request.form["mdp_confirm"]:
+            print("Les deux mots de passe doivent être les mêmes !")
+            return render_template("admin.html", error="Les deux mots de passe doivent être les mêmes !", utilisateur=utilisateur(), admin=admin())
+        
+        # On vérifie si le pseudo existe déjà
+        pseudo = request.form['pseudo']
+        user=db_users.find_one({"pseudo":pseudo})
+        if user :
+            print("Le pseudo est déjà enregistré !")
+            return render_template("admin.html", error="Le pseudo est déjà enregistré !", utilisateur=utilisateur(), admin=admin())
+        
+        # On vérifie si le pseudo n'est pas vide
+        pseudo = request.form['pseudo']
+        if pseudo == "" :
+            print("Le pseudo est vide !")
+            return render_template("admin.html", error="Le pseudo ne doit pas être vide !", utilisateur=utilisateur(), admin=admin())
+        
+        # On vérifie si le mdp n'est pas vide
+        if request.form["mdp"] == "":
+            return render_template("admin.html", error="Le mot de passe doit contenir des crarctères !", utilisateur=utilisateur(), admin=admin())
+        
+        # On encode le mdp
+        mdp = request.form["mdp"].encode("utf-8")
+        chaine_alea = bcrypt.gensalt()
+        mdp_encrypt = bcrypt.hashpw(mdp, chaine_alea)
+
+        # On l'ajoute à la bdd
+        db_users.insert_one({"pseudo": pseudo, "mdp":mdp_encrypt})
+
+        # On ajoute l'utilisateur à la session
+        session["utilisateur"] = request.form['pseudo']
+
+        return redirect(url_for('admin_route'))
+
+
 @app.route("/delete_user/<string:pseudo>", methods=["POST"])
 def delete_user(pseudo):
     if admin():
         db_users.delete_one({"pseudo": pseudo})
     return redirect(url_for("admin_route"))
 
+
+@app.route("/ajouter")
+def ajouter_film():
+    return render_template("ajouter_film.html", utilisateur=utilisateur(), admin=admin())
 
 # Gestion de l'erreur 404
 @app.errorhandler(404)

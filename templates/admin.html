@@ -30,27 +30,11 @@
 
                     
                         <input type="hidden" name="username" value="{{ user['pseudo'] }}">
-                        <button class="text-sm bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition" onclick="afficherBouton()">
+                        <form method="POST" action="/delete_user/{{ user['pseudo'] }}" class="mt-4">
+                        <button class="text-sm bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition">
                             Supprimer 🗑️
                         </button>
-                    
-                        <div id="btn_conf" style="display: none;" class="bg-red-600 hover:bg-red-700 rounded-full">
-                            Confirmer suppression
-                            <form method="POST" action="/delete_user/{{ user['pseudo'] }}" class="mt-4">
-                                <button class="bg-gray-600 rounded-full">Oui</button>
-                            </form>
-                            <button class="bg-gray-600 rounded-full" onclick="cacherBouton()">Non</button>
-                        </div>
-                        <script>
-                            function afficherBouton() {
-                                document.getElementById("btn_conf").style.display = "block";
-                            }
-                        </script>
-                        <script>
-                            function cacherBouton() {
-                                document.getElementById("btn_conf").style.display = "none";
-                            }
-                        </script>
+                        </form>
 
                 </div>
                 {% endfor %}
@@ -63,7 +47,7 @@
 
             <div class="bg-gray-900 p-8 rounded-2xl shadow-lg max-w-xl">
 
-                <form method="POST" action="{{ url_for('creer_compte') }}" class="flex flex-col gap-4">
+                <form method="POST" action="{{ url_for('creer_compte_admin') }}" class="flex flex-col gap-4">
 
                     <input type="text" name="pseudo" placeholder="Nom d'utilisateur"
                         class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">

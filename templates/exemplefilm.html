@@ -2,209 +2,89 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>404 - Page introuvable</title>
+    <title>{{ film.titre }} - Notation</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
-<body class="bg-[#0b0f1a] text-white font-author min-h-screen p-10">
+<body class="bg-[#0b0f1a] text-white min-h-screen p-10">
 
 <div class="max-w-6xl mx-auto">
-
-    <!-- HEADER FILM -->
     <div class="flex gap-10">
-
-        <!-- Affiche -->
-        <img src="{{ url_for('static', filename='poster.jpg') }}"
-             class="w-64 rounded-xl shadow-2xl object-cover">
-
-        <!-- Infos -->
+        <img src="{{ film.poster }}" class="w-64 rounded-xl shadow-2xl object-cover">
         <div class="flex-1">
+            <h1 class="text-5xl font-bold">{{ film.titre }}</h1>
+            <p class="text-gray-400 mt-2 text-xl">{{ film.date }} | Dirigé par {{ film.realisateur }}</p>
 
-            <div class="flex items-center justify-between">
-                <h1 class="text-5xl font-bold">
-                    {{ film.title }}
-                </h1>
-
-                <!-- Bouton signaler -->
-                <button class="text-red-500 hover:text-red-600 text-2xl cursor-pointer">
-                    🚩
-                </button>
-            </div>
-
-            <p class="text-gray-400 mt-2 text-xl">
-                {{ film.year }}
-            </p>
-
-            <p class="text-lg mt-1">
-                Directed by {{ film.director }}
-            </p>
-
-            <!-- NOTE MOYENNE -->
             <div class="mt-8 bg-[#1c2233] p-6 rounded-2xl w-96">
-                <div class="text-5xl font-bold mb-4">
-                    {{ film.average_score }}
-                </div>
-
+                <div class="text-5xl font-bold mb-4">{{ film.average_score|default(0) }}%</div>
                 <div class="w-full h-6 bg-red-900 rounded-full overflow-hidden">
-                    <div class="h-full bg-red-600"
-                         style="width: {{ film.average_score }}%;">
+                    <div class="h-full bg-red-600" style="width: {{ film.average_score|default(0) }}%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if utilisateur %}
+    <form action="{{ url_for('rate_film', id=film._id) }}" method="POST" class="mt-12 bg-[#141a28] p-8 rounded-2xl border border-gray-800">
+        <div class="flex items-center gap-6">
+            <div id="userScoreDisplay" class="text-5xl font-bold text-red-500">
+                {{ user_review.score if user_review else '50' }}
+            </div>
+            <input id="userSlider" name="score" type="range" min="0" max="100" 
+                   value="{{ user_review.score if user_review else 50 }}"
+                   class="w-full h-6 bg-red-900 rounded-full appearance-none cursor-pointer">
+        </div>
+        <div class="mt-8">
+            <textarea name="comment" placeholder="Laisse un avis sur ce film..." 
+                      class="w-full h-32 bg-[#0b0f1a] rounded-xl p-4 resize-none focus:ring-2 focus:ring-red-600 outline-none text-white">{{ user_review.comment if user_review else '' }}</textarea>
+        </div>
+        <button type="submit" class="mt-4 bg-red-600 hover:bg-red-700 px-8 py-3 rounded-full font-bold transition">
+            {{ 'Modifier mon avis' if user_review else 'Publier ma note' }}
+        </button>
+    </form>
+    {% else %}
+    <div class="mt-12 p-8 bg-[#141a28] rounded-2xl text-center">
+        <p class="text-xl">Veuillez vous <a href="{{ url_for('connexion') }}" class="text-red-500 underline">connecter</a> pour noter ce film.</p>
+    </div>
+    {% endif %}
+
+    <h2 class="text-3xl font-bold mb-6 mt-16 text-red-600">Avis récents</h2>
+    <div class="grid grid-cols-1 gap-6">
+        {% for review in recent_reviews %}
+        <div class="bg-[#1c2233] p-6 rounded-2xl border border-gray-700">
+            <div class="flex justify-between items-start">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center font-bold">
+                        {{ review.pseudo[0]|upper }}
+                    </div>
+                    <div>
+                        <p class="font-semibold text-lg">{{ review.pseudo }}</p>
+                        <p class="text-gray-500 text-sm">{{ review.date.strftime('%d/%m/%Y') if review.date }}</p>
                     </div>
                 </div>
+                <div class="text-3xl font-bold">{{ review.score }}</div>
             </div>
-
-        </div>
-    </div>
-
-    <!-- ZONE UTILISATEUR -->
-    <div class="mt-12 bg-[#141a28] p-8 rounded-2xl">
-
-        <div class="flex items-center gap-6">
-
-            <!-- Photo profil -->
-            <img src="{{ url_for('static', filename='profile.jpg') }}"
-                 class="w-20 h-20 rounded-full object-cover">
-
-            <!-- Note utilisateur -->
-            <div class="flex items-center gap-6 w-full">
-
-                <!-- Score affiché -->
-                <div id="userScoreDisplay" class="text-5xl font-bold">
-                    ?
-                </div>
-
-                <!-- Slider -->
-                <input id="userSlider"
-                       type="range"
-                       min="0"
-                       max="100"
-                       value="0"
-                       class="w-full h-6 bg-red-900 rounded-full appearance-none cursor-pointer">
-
+            <p class="mt-4 text-gray-300">{{ review.comment }}</p>
+            
+            <div class="flex justify-between items-center mt-6">
+                <a href="{{ url_for('like_review', review_id=review._id) }}" 
+                   class="flex items-center gap-2 text-red-500 hover:scale-110 transition">
+                    <span class="text-2xl">❤️</span>
+                    <span class="font-bold">{{ review.likes|default(0) }}</span>
+                </a>
             </div>
-
         </div>
-
-        <!-- Zone review -->
-        <div class="mt-8">
-            <textarea
-                placeholder="Add a review..."
-                class="w-full h-32 bg-[#0b0f1a] rounded-xl p-4 resize-none focus:outline-none">
-            </textarea>
-        </div>
-
+        {% endfor %}
     </div>
-
 </div>
 
 <script>
     const slider = document.getElementById("userSlider");
     const display = document.getElementById("userScoreDisplay");
-
-    slider.addEventListener("input", function () {
-        display.textContent = this.value;
-
-        // Change couleur selon valeur
-        slider.style.background = `linear-gradient(to right, #e60914 ${this.value}%, #b72725 ${this.value}%)`;
-    });
+    if(slider) {
+        slider.addEventListener("input", function () {
+            display.textContent = this.value;
+        });
+    }
 </script>
-
-<!-- Format d'une review -->
-
-{% for review in reviews %}
-<div class="bg-[#1c2233] p-6 rounded-2xl mb-8">
-
-    <!-- Header -->
-    <div class="flex justify-between items-start">
-
-        <!-- Profil + pseudo -->
-        <div class="flex items-center gap-4">
-            <img src="{{ url_for('static', filename=review.profile_pic) }}"
-                 class="w-14 h-14 rounded-full object-cover">
-
-            <div>
-                <p class="font-semibold text-lg">
-                    {{ review.username }}
-                </p>
-                <p class="text-gray-400 text-sm">
-                    {{ review.time_ago }}
-                </p>
-            </div>
-        </div>
-
-        <!-- Note utilisateur -->
-        <div class="text-4xl font-bold text-white">
-            {{ review.score }}
-        </div>
-
-    </div>
-
-    <!-- Texte -->
-    <p class="mt-6 text-gray-300 leading-relaxed">
-        {{ review.short_text }}
-    </p>
-
-    <!-- Footer -->
-    <div class="flex justify-between items-center mt-6">
-
-        <div class="flex items-center gap-6">
-
-            <!-- Like -->
-            <button class="flex items-center gap-2 text-red-500 hover:text-red-600">
-                ❤️
-                <span>{{ review.likes }}</span>
-            </button>
-
-            <!-- View more -->
-            {% if review.is_truncated %}
-            <button class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full text-sm">
-                View More
-            </button>
-            {% endif %}
-
-        </div>
-
-        <!-- Signalement -->
-        <button class="text-red-500 hover:text-red-600">
-            🚩
-        </button>
-
-    </div>
-
-</div>
-{% endfor %}
-
-<!-- Popular and recent review -->
-
-<h2 class="text-3xl font-bold mb-6 mt-16">
-    Popular Reviews 🔥
-</h2>
-
-<div id="popularReviews">
-    {% for review in popular_reviews %}
-        {% include "review_card.html" %}
-    {% endfor %}
-</div>
-
-<button id="loadMorePopular"
-        class="mt-4 bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full">
-    Load More
-</button>
-
-<h2 class="text-3xl font-bold mb-6 mt-16">
-    Recent Reviews 🕐
-</h2>
-
-<div id="recentReviews">
-    {% for review in recent_reviews %}
-        {% include "review_card.html" %}
-    {% endfor %}
-</div>
-
-<button id="loadMoreRecent"
-        class="mt-4 bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full">
-    Load More
-</button>
-
-
 </body>
 </html>
