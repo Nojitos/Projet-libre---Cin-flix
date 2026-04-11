@@ -1,10 +1,5 @@
-# Répartition des tâches
+# Equipe
+## Nathan, Thomas, Noah
 
-## Noah :
-### Nav bar
-
-## Thomas :
-### Footer
-
-## Nathan :
-### Header
+# Projet
+## Cherchez moi, découvrez plus. Grâce à Cinéflix, découvrez des millions de films et séries.
