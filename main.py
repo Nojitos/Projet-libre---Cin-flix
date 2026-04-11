@@ -29,67 +29,76 @@ def utilisateur():
     else :
         None
 
+def admin():
+    """
+    Renvoie True si l'utilisateur est admin, False sinon
+    """
+    # L'utilisateur doit être connecté et doit faire partie de la collection admin
+    if utilisateur() is not None and admin_collection.find_one({"pseudo": utilisateur()}) :
+        return True
+    return False
+
 @app.route("/")
 def index():
     films = [{
-        "poster": url_for('static', filename='hp.jpg'),
+        "poster": "/static/poster/hp.jpg",
         "titre": "Harry Potter",
         "realisateur": "Christopher Columbus",
         "date": "2001"
     },{
-        "poster": url_for('static', filename='spiderman.jpg'),
+        "poster": url_for('static', filename='/poster/spiderman.jpg'),
         "titre": "Spider-Man",
         "realisateur": "Sam Raimi",
         "date": "2002"
     },{
-        "poster":  url_for('static', filename='starwars.webp'),
+        "poster":  url_for('static', filename='/poster/starwars.webp'),
         "titre": "Star Wars",
         "realisateur": "George Lucas",
         "date": "1977"
     },
     {
-        "poster":  url_for('static', filename='interstellar.jpg'),
+        "poster":  url_for('static', filename='/poster/interstellar.jpg'),
         "titre": "Interstellar",
         "realisateur": "Christopher Nolan",
         "date": "2014"
     },
     ]
-    return render_template("index.html", films=films, utilisateur=utilisateur())
+    return render_template("index.html", films=films, utilisateur=utilisateur(), admin=admin())
 
 @app.route("/films")
 def films():
     films = [{
-        "poster": url_for('static', filename='hp.jpg'),
+        "poster": url_for('static', filename='/poster/hp.jpg'),
         "titre": "Harry Potter",
         "realisateur": "Christopher Columbus",
         "date": "2001"
     },{
-        "poster": url_for('static', filename='spiderman.jpg'),
+        "poster": url_for('static', filename='/poster/spiderman.jpg'),
         "titre": "Spider-Man",
         "realisateur": "Sam Raimi",
         "date": "2002"
     },{
-        "poster":  url_for('static', filename='starwars.webp'),
+        "poster":  url_for('static', filename='/poster/starwars.webp'),
         "titre": "Star Wars",
         "realisateur": "George Lucas",
         "date": "1977"
     },
     {
-        "poster":  url_for('static', filename='interstellar.jpg'),
+        "poster":  url_for('static', filename='/poster/interstellar.jpg'),
         "titre": "Interstellar",
         "realisateur": "Christopher Nolan",
         "date": "2014"
     },
     ]
-    return render_template("films.html", films=films, utilisateur=utilisateur())
+    return render_template("films.html", films=films, utilisateur=utilisateur(), admin=admin())
 
 @app.route("/series")
 def series():
-    return render_template("series.html", utilisateur=utilisateur())
+    return render_template("series.html", utilisateur=utilisateur(), admin=admin())
 
 @app.route("/tendances")
 def tendances():
-    return render_template("tendances.html", utilisateur=utilisateur())
+    return render_template("tendances.html", utilisateur=utilisateur(), admin=admin())
 
 @app.route("/deconnexion")
 def deconnexion():
@@ -101,7 +110,7 @@ def connexion():
     #On vérifie si la méthode est POST pour traiter le formulaire reçu
     if request.method == 'POST':
         if request.form["pseudo"] == "":
-            return render_template('connexion.html', error = "Merci d'entrer un pseudo.", utilisateur=utilisateur())
+            return render_template('connexion.html', error = "Merci d'entrer un pseudo.", utilisateur=utilisateur(), admin=admin())
 
         #On récupère la table "pseudo" de notre bdd
         user=db_users.find_one({"pseudo":request.form['pseudo']})
@@ -109,34 +118,40 @@ def connexion():
             if bcrypt.checkpw(request.form['mdp'].encode('utf-8'), user['mdp']):
                 session["utilisateur"] = request.form['pseudo']
                 return redirect(url_for('index'))
-        return render_template('connexion.html', error = 'Les identifiants ne sont pas reconnus.', utilisateur=utilisateur())
+        return render_template('connexion.html', error = 'Les identifiants ne sont pas reconnus.', utilisateur=utilisateur(), admin=admin())
             
     else :
-        return render_template('connexion.html', error=None, utilisateur=utilisateur())
+        return render_template('connexion.html', error=None, utilisateur=utilisateur(), admin=admin())
 
 @app.route("/creer_compte", methods=["GET", "POST"])
 def creer_compte():
     if request.method == "GET":
-        return render_template("createaccount.html", error=None, utilisateur=utilisateur())
+        return render_template("createaccount.html", error=None, utilisateur=utilisateur(), admin=admin())
     else :
         if request.form["pseudo"] == "":
-            return render_template('connexion.html', error = "Merci d'entrer un pseudo.", utilisateur=utilisateur())
+            return render_template('connexion.html', error = "Merci d'entrer un pseudo.", utilisateur=utilisateur(), admin=admin())
         
         # On vérifie que les deux mdp sont les mêmes
         if request.form["mdp"] != request.form["mdp_confirm"]:
             print("Les deux mots de passe doivent être les mêmes !")
-            return render_template("createaccount.html", error="Les deux mots de passe doivent être les mêmes !", utilisateur=utilisateur())
+            return render_template("createaccount.html", error="Les deux mots de passe doivent être les mêmes !", utilisateur=utilisateur(), admin=admin())
         
         # On vérifie si le pseudo existe déjà
         pseudo = request.form['pseudo']
         user=db_users.find_one({"pseudo":pseudo})
         if user :
             print("Le pseudo est déjà enregistré !")
-            return render_template("createaccount.html", error="Le pseudo est déjà enregistré !", utilisateur=utilisateur())
+            return render_template("createaccount.html", error="Le pseudo est déjà enregistré !", utilisateur=utilisateur(), admin=admin())
+        
+        # On vérifie si le pseudo n'est pas vide
+        pseudo = request.form['pseudo']
+        if pseudo == "" :
+            print("Le pseudo est vide !")
+            return render_template("createaccount.html", error="Le pseudo ne doit pas être vide !", utilisateur=utilisateur(), admin=admin())
         
         # On vérifie si le mdp n'est pas vide
         if request.form["mdp"] == "":
-            return render_template("createaccount.html", error="Le mot de passe doit contenir des crarctères !", utilisateur=utilisateur())
+            return render_template("createaccount.html", error="Le mot de passe doit contenir des crarctères !", utilisateur=utilisateur(), admin=admin())
         
         # On encode le mdp
         mdp = request.form["mdp"].encode("utf-8")
@@ -158,7 +173,7 @@ def film_page(id):
     if not film:
         abort(404)
 
-    return render_template("exemplefilm.html", film=film, utilisateur=utilisateur())
+    return render_template("exemplefilm.html", film=film, utilisateur=utilisateur(), admin=admin())
 
 @app.route("/testfilm")
 def testfilm():
@@ -166,15 +181,19 @@ def testfilm():
     return render_template("exemplefilm.html", film=film)
 
 @app.route("/admin")
-def admin():
-    for item in db_users.find():
-        print(item)
+def admin_route():
     # On ne peut accéder à la page qui si l'utilisateur est connecté et est dans la liste des admins
-    if utilisateur() is not None and admin_collection.find_one({"pseudo": utilisateur()}) :
+    if admin() :
         print(db_users.find())
-        return render_template("admin.html", db_users=db_users.find(), utilisateur=utilisateur())
+        return render_template("admin.html", db_users=db_users.find(), utilisateur=utilisateur(), admin=admin())
     return redirect(url_for("index"))
-    
+
+@app.route("/delete_user/<string:pseudo>", methods=["POST"])
+def delete_user(pseudo):
+    if admin():
+        db_users.delete_one({"pseudo": pseudo})
+    return redirect(url_for("admin_route"))
+
 
 # Gestion de l'erreur 404
 @app.errorhandler(404)

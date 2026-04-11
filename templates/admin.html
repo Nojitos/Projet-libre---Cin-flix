@@ -22,33 +22,38 @@
                 {% for user in db_users %}
                 <div class="bg-gray-900 p-5 rounded-2xl shadow-lg hover:scale-105 transition duration-300 flex flex-col items-center">
                     
-                    <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-xl font-bold mb-3">
+                    <div class="w-16 h-16 bg-cyan-500 rounded-full flex items-center justify-center text-xl font-bold mb-3">
                         {{ user["pseudo"][0]|upper }}
                     </div>
 
                     <h3 class="font-medium">{{ user["pseudo"] }}</h3>
 
-                    <form method="POST" action="/admin/manage_user" class="mt-4">
+                    
                         <input type="hidden" name="username" value="{{ user['pseudo'] }}">
-                        <button class="text-sm bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-full transition">
-                            Gérer
+                        <button class="text-sm bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition" onclick="afficherBouton()">
+                            Supprimer 🗑️
                         </button>
-                    </form>
+                    
+                        <div id="btn_conf" style="display: none;" class="bg-red-600 hover:bg-red-700 rounded-full">
+                            Confirmer suppression
+                            <form method="POST" action="/delete_user/{{ user['pseudo'] }}" class="mt-4">
+                                <button class="bg-gray-600 rounded-full">Oui</button>
+                            </form>
+                            <button class="bg-gray-600 rounded-full" onclick="cacherBouton()">Non</button>
+                        </div>
+                        <script>
+                            function afficherBouton() {
+                                document.getElementById("btn_conf").style.display = "block";
+                            }
+                        </script>
+                        <script>
+                            function cacherBouton() {
+                                document.getElementById("btn_conf").style.display = "none";
+                            }
+                        </script>
 
                 </div>
                 {% endfor %}
-            </div>
-
-            <!-- ACTION RAPIDE -->
-            <div class="mt-10 flex flex-col md:flex-row gap-4 items-center">
-                <form method="POST" action="/admin/manage_user" class="flex gap-3">
-                    <input type="text" name="username" placeholder="Nom d'utilisateur"
-                        class="px-4 py-2 rounded-full bg-gray-800 text-white focus:outline-none">
-                    
-                    <button class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-full transition">
-                        Gérer
-                    </button>
-                </form>
             </div>
         </section>
 
@@ -78,7 +83,6 @@
             </div>
         </section>
     </div>
-
 </div>
 
 {% endblock %}
