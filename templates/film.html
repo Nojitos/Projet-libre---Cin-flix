@@ -10,9 +10,8 @@
         <div class="bg-[#1e2129] p-8 rounded-[40px] flex flex-col items-center justify-center min-h-[400px] border border-gray-700 shadow-2xl">
             <h2 class="text-3xl font-bold mb-8">Poster :</h2>
                 <div class="w-full h-full flex flex-col items-center justify-center">
-                    <img src="{{ film['poster'] }}" alt="Aperçu du poster" class="max-h-[300px] rounded-lg shadow-lg mb-4">
+                    <img src="\{{ film['poster'] }}" alt="Aperçu du poster" class="max-h-[300px] rounded-lg shadow-lg mb-4">
                 </div>
-            </div>
         </div>
 
         <div class="bg-[#1e2129] p-8 rounded-[40px] border border-gray-700 shadow-2xl text-left">
@@ -28,11 +27,11 @@
                 </div>
                 <div>
                     <label class="block font-bold mb-1 ml-2">Durée :</label>
-                    <p class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-3 focus:ring-2 focus:ring-red-500 outline-none [color-scheme:dark]">  </p>
+                    <p class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-3 focus:ring-2 focus:ring-red-500 outline-none [color-scheme:dark]"> {{film["duree"]}} </p>
                 </div>
                 <div>
                     <label class="block font-bold mb-1 ml-2">Synopsis :</label>
-                    <textarea name="synopsis" rows="4" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-3 focus:ring-2 focus:ring-red-500 outline-none resize-none"></textarea>
+                    <p class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-3 focus:ring-2 focus:ring-red-500 outline-none resize-none"> {{film["synopsis"]}} </p>
                 </div>
             </div>
         </div>
@@ -42,28 +41,23 @@
             <div class="space-y-6">
                 <div>
                     <label class="block text-2xl font-bold mb-2 ml-2">Genre :</label>
-                    <input type="text" name="genre" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none">
+                    <p class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none"> {{film["genre"]}} </p>
                 </div>
                 <div>
                     <label class="block text-2xl font-bold mb-2 ml-2">Studio :</label>
-                    <input type="text" name="studio" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none" required>
+                    <p class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none"> {{film["studio"]}} </p>
                 </div>
                 <div>
                     <label class="block text-2xl font-bold mb-2 ml-2">Producteur :</label>
-                    <input type="text" name="producteur" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none" required>
+                    <p class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none"> {{film["producteur"]}} </p>
                 </div>
                 <div>
                     <label class="block text-2xl font-bold mb-2 ml-2">Acteurs :</label>
-                    <textarea name="acteurs" rows="3" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none resize-none" required></textarea>
+                    <p class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none resize-none"> {{film["acteurs"]}} </p>
                 </div>
             </div>
         </div>
     </div>
-
-    <button type="submit" class="group relative flex items-center space-x-4 bg-[#7b1d2e] hover:bg-[#9b2d3e] px-16 py-4 rounded-2xl border-2 border-white transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(123,29,46,0.5)]">
-        <span class="text-3xl transform group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform">✈️</span>
-        <span class="text-3xl font-bold uppercase tracking-widest">Publier</span>
-    </button>
 </div>
 
 {% endblock %}

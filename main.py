@@ -151,7 +151,7 @@ def film_page(id):
     if not film:
         abort(404)
 
-    return render_template("exemplefilm.html", film=film, utilisateur=utilisateur(), admin=admin())
+    return render_template("film.html", film=film, utilisateur=utilisateur(), admin=admin())
 
 @app.route("/testfilm")
 def testfilm():
@@ -241,7 +241,7 @@ def ajouter_film():
         nouveau_nom = uuid.uuid4().hex + extension
 
         # On définit le chemin complet
-        chemin_complet = os.path.join(DOSSIER_POSTER, nouveau_nom)
+        chemin_complet = os.path.join("\static\poster", nouveau_nom)
 
         # On sauvegarde l'image'
         image.save(chemin_complet)
