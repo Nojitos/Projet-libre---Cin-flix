@@ -1,6 +1,8 @@
+import os
+import uuid
+
 from flask import Flask, render_template, session, request, url_for, redirect
 
-import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import bcrypt
@@ -18,6 +20,9 @@ admin_collection = mongo.db.admin
 app = Flask(__name__)
 
 app.secret_key = os.getenv("KEY")
+
+# Dossier ou on enregistre les posters
+DOSSIER_POSTER = os.path.join('static', 'poster')
 
 def utilisateur():
     """
@@ -41,23 +46,18 @@ def admin():
 @app.route("/")
 def index():
     films = [{
-        "poster": "/static/poster/hp.jpg",
+        "poster": "/static/poster/8c3f1f3d55be494c88c25525c501cf2f.jpg",
         "titre": "Harry Potter",
         "realisateur": "Christopher Columbus",
         "date": "2001"
     },{
-        "poster": url_for('static', filename='/poster/spiderman.jpg'),
-        "titre": "Spider-Man",
-        "realisateur": "Sam Raimi",
-        "date": "2002"
-    },{
-        "poster":  url_for('static', filename='/poster/starwars.webp'),
+        "poster":  url_for('static', filename='/poster/59e9039a768d467f85afcecb2bd962f2.webp'),
         "titre": "Star Wars",
         "realisateur": "George Lucas",
         "date": "1977"
     },
     {
-        "poster":  url_for('static', filename='/poster/interstellar.jpg'),
+        "poster":  url_for('static', filename='/poster/15743638c8e441d693c6ca3d8377a25f.jpg'),
         "titre": "Interstellar",
         "realisateur": "Christopher Nolan",
         "date": "2014"
@@ -67,29 +67,7 @@ def index():
 
 @app.route("/films")
 def films():
-    films = [{
-        "poster": url_for('static', filename='/poster/hp.jpg'),
-        "titre": "Harry Potter",
-        "realisateur": "Christopher Columbus",
-        "date": "2001"
-    },{
-        "poster": url_for('static', filename='/poster/spiderman.jpg'),
-        "titre": "Spider-Man",
-        "realisateur": "Sam Raimi",
-        "date": "2002"
-    },{
-        "poster":  url_for('static', filename='/poster/starwars.webp'),
-        "titre": "Star Wars",
-        "realisateur": "George Lucas",
-        "date": "1977"
-    },
-    {
-        "poster":  url_for('static', filename='/poster/interstellar.jpg'),
-        "titre": "Interstellar",
-        "realisateur": "Christopher Nolan",
-        "date": "2014"
-    },
-    ]
+    films = list(films_collection.find({}))
     return render_template("films.html", films=films, utilisateur=utilisateur(), admin=admin())
 
 @app.route("/series")
@@ -188,6 +166,19 @@ def admin_route():
         return render_template("admin.html", db_users=db_users.find(), utilisateur=utilisateur(), admin=admin())
     return redirect(url_for("index"))
 
+
+@app.route("/change_role", methods=["POST"])
+def change_role():
+    pseudo = request.form.get("username")  # ← récupéré du select
+    user = db_users.find_one({"pseudo": pseudo})
+
+    if admin():
+        new_role = request.form.get("role")
+        if new_role in ["user", "admin", "moderator"]:
+            db_users.update_one({"pseudo": pseudo}, {"$set": {"role": new_role}})
+
+    return redirect(url_for("admin_route"), db_users=db_users.find())
+
 @app.route("/creer_compte_admin", methods=["GET", "POST"])
 def creer_compte_admin():
     if request.method == "GET":
@@ -224,9 +215,6 @@ def creer_compte_admin():
         # On l'ajoute à la bdd
         db_users.insert_one({"pseudo": pseudo, "mdp":mdp_encrypt})
 
-        # On ajoute l'utilisateur à la session
-        session["utilisateur"] = request.form['pseudo']
-
         return redirect(url_for('admin_route'))
 
 
@@ -237,9 +225,43 @@ def delete_user(pseudo):
     return redirect(url_for("admin_route"))
 
 
-@app.route("/ajouter")
+@app.route("/ajouter_film", methods=["GET", "POST"])
 def ajouter_film():
-    return render_template("ajouter_film.html", utilisateur=utilisateur(), admin=admin())
+    if request.method == "GET" :
+        # Si l'utilisateur n'est pas connecté, on le renvoie à la page de connexion
+        if utilisateur() is None :
+            return redirect(url_for("connexion"))
+        return render_template("ajouter_film.html", utilisateur=utilisateur(), admin=admin())
+    else :
+        image = request.files["poster"]
+        # On récupère l'extension de l'image
+        extension = os.path.splitext(image.filename)[1].lower()
+
+        # On génère un nom aléatoire unique afin d'être sur qu'il n'y ait pas deux fois le même fichier
+        nouveau_nom = uuid.uuid4().hex + extension
+
+        # On définit le chemin complet
+        chemin_complet = os.path.join(DOSSIER_POSTER, nouveau_nom)
+
+        # On sauvegarde l'image'
+        image.save(chemin_complet)
+
+        film = {
+            "titre" : request.form["titre"],
+            "date" : request.form["date"],
+            "duree" : request.form["duree"],
+            "synopsis" : request.form["synopsis"],
+            "genre" : request.form["genre"],
+            "studio" : request.form["studio"],
+            "producteur" : request.form["producteur"],
+            "acteurs" : request.form["acteurs"],
+            "poster" : chemin_complet
+        }
+
+        films_collection.insert_one(film)
+
+        return redirect(url_for("index"))
+
 
 # Gestion de l'erreur 404
 @app.errorhandler(404)

@@ -11,25 +11,9 @@
 {% block content %}
 <body class="bg-[#0b0f1a] text-white font-sans min-h-screen flex items-center justify-center relative overflow-hidden">
 
-    <!-- Posters -->
-<img src="{{ url_for('static', filename='hp.jpg') }}" 
-     onerror="this.style.display='none'" 
-     class="absolute top-16 left-20 w-40 rotate-[-20deg] rounded-xl shadow-2xl">
-
-<img src="{{ url_for('static', filename='interstellar.jpg') }}" 
-     onerror="this.style.display='none'" 
-     class="absolute top-20 right-20 w-40 rotate-[15deg] rounded-xl shadow-2xl">
-
-<img src="{{ url_for('static', filename='spiderman.jpg') }}" 
-     onerror="this.style.display='none'" 
-     class="absolute bottom-16 left-24 w-44 rotate-[20deg] rounded-xl shadow-2xl">
-
-<img src="{{ url_for('static', filename='starwars.webp') }}" 
-     onerror="this.style.display='none'" 
-     class="absolute bottom-16 right-24 w-44 rotate-[-15deg] rounded-xl shadow-2xl">
 
     <!-- Contenu central -->
-    <div class="text-center z-10">
+    <div class="text-center z-10 py-30">
         <h1 class="text-[200px] font-extrabold text-red-600 leading-none drop-shadow-[0_8px_20px_rgba(255,0,0,0.6)]">
             404
         </h1>

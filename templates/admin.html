@@ -66,6 +66,32 @@
 
             </div>
         </section>
+
+        <!-- Gestion des rôles -->
+     <div>
+        <h2 class="text-2xl font-semibold mb-6 mt-16">🔐 Gestion des rôles</h2>
+
+        <div class="bg-gray-900 p-8 rounded-2xl shadow-lg max-w-xl">
+            <form method="POST" action="/change_role" class="flex flex-col gap-4">
+                <select name="username" class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+                    {% for user in db_users %}
+                        <option value="{{ user['pseudo'] }}">{{ user['pseudo'] }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="role" class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+                    <option value="user">Utilisateur🧙‍♂️</option>
+                    <option value="admin">Administrateur👑</option>
+                    <option value="moderator">Modérateur🖌️</option>
+                </select>
+
+                <button class="bg-blue-600 hover:bg-blue-700 py-3 rounded-full font-semibold transition" type="submit">
+                    Changer le rôle
+                </button>
+            </form>
+
+            
+     </div>
     </div>
 </div>
 

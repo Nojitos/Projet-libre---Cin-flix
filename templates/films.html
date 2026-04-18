@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="bg-black w-full">
+<div class="bg-black w-full p-14">
 
     <div class="w-full flex justify-between items-center mb-8">
         <h1 class="text-5xl font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
@@ -27,14 +27,16 @@
         <article class="flex flex-col items-center break-words w-40">
             
             <div class="w-40">
+                <a href="/film/{{ film['_id'] }}">
                 <img src="{{ film['poster'] }}" 
                     alt="poster du film" 
                     class="w-full h-full object-cover rounded-[2rem] shadow-md">
+                </a>
             </div>
 
             <div class="text-center mt-2">
                 <h3 class="text-red-700 font-medium leading-tight"> {{ film["titre"] }} </h3>
-                <h4 class="text-red-700 text-sm"> {{ film["realisateur"] }} </h4>
+                <h4 class="text-red-700 text-sm"> {{ film["producteur"] }} </h4>
                 <h4 class="text-red-700 text-sm opacity-80"> {{ film["date"] }} </h4>
             </div>
 

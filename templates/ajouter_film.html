@@ -5,18 +5,24 @@
 <div class="max-w-6xl mx-auto">
     <h1 class="text-4xl font-bold mb-10">Publier un film :</h1>
 
-    <form action="/ajouter" method="POST" class="flex flex-col items-center space-y-10">
+    <form action="/ajouter_film" method="POST" class="flex flex-col items-center space-y-10" enctype="multipart/form-data"> <!--Pour pouvoir récupérer une image-->
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
             
-            <div class="bg-[#1e2129] p-8 rounded-[40px] flex flex-col items-center justify-center min-h-[400px] border border-gray-700 shadow-2xl">
+            <div id="drop-zone" class="bg-[#1e2129] p-8 rounded-[40px] flex flex-col items-center justify-center min-h-[400px] border border-gray-700 shadow-2xl">
                 <h2 class="text-3xl font-bold mb-8">Poster :</h2>
-                <div class="flex-grow flex items-center justify-center">
-                    <label class="cursor-pointer bg-[#7b1d2e] hover:bg-[#9b2d3e] transition-colors px-6 py-4 rounded-xl flex items-center space-x-3 border-2 border-dashed border-white/30">
+                
+                <div class="flex-grow flex items-center justify-center w-full">
+                    <label id="label-poster" class="cursor-pointer bg-[#7b1d2e] hover:bg-[#9b2d3e] transition-colors px-6 py-4 rounded-xl flex items-center space-x-3 border-2 border-dashed border-white/30">
                         <span class="text-2xl">📤</span>
                         <span class="font-bold">Importer une image</span>
-                        <input type="file" class="hidden" name="poster">
+                        <input type="file" id="input-poster" class="hidden" name="poster" accept="image/*" required>
                     </label>
+
+                    <div id="preview-container" class="hidden w-full h-full flex flex-col items-center justify-center">
+                        <img id="preview-image" src="#" alt="Aperçu du poster" class="max-h-[300px] rounded-lg shadow-lg mb-4">
+                        <button type="button" id="change-image" class="cursor-pointer text-sm text-gray-400 underline">Changer l'image</button>
+                    </div>
                 </div>
             </div>
 
@@ -25,11 +31,11 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block font-bold mb-1 ml-2">Titre :</label>
-                        <input type="text" name="titre" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-3 focus:ring-2 focus:ring-red-500 outline-none">
+                        <input type="text" name="titre" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-3 focus:ring-2 focus:ring-red-500 outline-none" required>
                     </div>
                     <div>
                         <label class="block font-bold mb-1 ml-2">Date :</label>
-                        <input type="date" name="date" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-3 focus:ring-2 focus:ring-red-500 outline-none">
+                        <input type="text" name="date" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-3 focus:ring-2 focus:ring-red-500 outline-none" required>
                     </div>
                     <div>
                         <label class="block font-bold mb-1 ml-2">Durée :</label>
@@ -52,15 +58,15 @@
                     </div>
                     <div>
                         <label class="block text-2xl font-bold mb-2 ml-2">Studio :</label>
-                        <input type="text" name="studio" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none">
+                        <input type="text" name="studio" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none" required>
                     </div>
                     <div>
                         <label class="block text-2xl font-bold mb-2 ml-2">Producteur :</label>
-                        <input type="text" name="producteur" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none">
+                        <input type="text" name="producteur" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none" required>
                     </div>
                     <div>
                         <label class="block text-2xl font-bold mb-2 ml-2">Acteurs :</label>
-                        <textarea name="acteurs" rows="3" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none resize-none"></textarea>
+                        <textarea name="acteurs" rows="3" class="w-full bg-[#7b1d2e]/40 border-none rounded-2xl p-4 focus:ring-2 focus:ring-red-500 outline-none resize-none" required></textarea>
                     </div>
                 </div>
             </div>
@@ -72,5 +78,34 @@
         </button>
     </form>
 </div>
+
+<!--Pertmet de changer le bouton en image quand l'utilisateur l'ajoute-->
+<script>
+    const inputPoster = document.getElementById('input-poster');
+    const previewContainer = document.getElementById('preview-container');
+    const previewImage = document.getElementById('preview-image');
+    const labelPoster = document.getElementById('label-poster');
+    const changeImageBtn = document.getElementById('change-image');
+
+    inputPoster.addEventListener('change', function() {
+        const file = this.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                labelPoster.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    changeImageBtn.addEventListener('click', function() {
+        inputPoster.click();
+    });
+</script>
 
 {% endblock %}
