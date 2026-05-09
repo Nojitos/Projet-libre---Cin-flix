@@ -60,4 +60,48 @@
     </div>
 </div>
 
+<!-- COMMENTAIRES (A TESTER) -->
+<div class="mt-12">
+    <h2 class="text-3xl font-bold mb-8 ml-2">Commentaires</h2>
+    
+    <div class="space-y-6">
+        {% for commentaire in film.commentaires %}
+        <div class="bg-[#1e2129] p-8 rounded-[40px] border border-gray-700 shadow-2xl relative">
+            <!-- Header : Avatar + Pseudo + Note -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white rounded-full p-2 w-12 h-12 flex items-center justify-center text-black">
+                        <i class="fas fa-user text-2xl"></i> 
+                    </div>
+                    <span class="text-2xl font-bold italic">{{ commentaire.pseudo }}</span>
+                </div>
+                <span class="text-5xl font-black italic">{{ commentaire.note }}</span>
+            </div>
+
+            <!-- Corps du commentaire -->
+            <p class="text-gray-300 leading-relaxed mb-6">
+                {{ commentaire.texte }}
+            </p>
+
+            <!-- Footer : Likes + Bouton + Date -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2 text-red-500">
+                    <span class="text-xl">❤️</span>
+                    <span class="text-white font-bold">{{ commentaire.likes }}</span>
+                </div>
+                
+                <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-8 rounded-full transition duration-300">
+                    View More
+                </button>
+
+                <div class="flex items-center space-x-2 text-gray-400">
+                    <span>🚩</span>
+                    <span class="text-sm italic">{{ commentaire.date_relative }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
 {% endblock %}

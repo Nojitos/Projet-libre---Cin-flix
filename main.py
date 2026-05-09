@@ -14,7 +14,6 @@ load_dotenv()
 mongo = MongoClient(os.getenv('TOKEN'))
 films_collection = mongo.db.film
 db_users = mongo.db.account
-admin_collection = mongo.db.admin
 
 # Création de l'app
 app = Flask(__name__)
@@ -34,13 +33,14 @@ def utilisateur():
     else :
         None
 
-def admin():
+def role():
     """
-    Renvoie True si l'utilisateur est admin, False sinon
+    Renvoie le role de l'utilisateur si il est connecte, False sinon
     """
-    # L'utilisateur doit être connecté et doit faire partie de la collection admin
-    if utilisateur() is not None and admin_collection.find_one({"pseudo": utilisateur()}) :
-        return True
+    # L'utilisateur doit être connecté
+    if utilisateur() is not None :
+        user=db_users.find_one({"pseudo":session["utilisateur"]})
+        return user["role"]
     return False
 
 @app.route("/")
@@ -63,20 +63,20 @@ def index():
         "date": "2014"
     },
     ]
-    return render_template("index.html", films=films, utilisateur=utilisateur(), admin=admin())
+    return render_template("index.html", films=films, utilisateur=utilisateur(), role=role())
 
 @app.route("/films")
 def films():
     films = list(films_collection.find({}))
-    return render_template("films.html", films=films, utilisateur=utilisateur(), admin=admin())
+    return render_template("films.html", films=films, utilisateur=utilisateur(), role=role())
 
 @app.route("/series")
 def series():
-    return render_template("series.html", utilisateur=utilisateur(), admin=admin())
+    return render_template("series.html", utilisateur=utilisateur(), role=role())
 
 @app.route("/tendances")
 def tendances():
-    return render_template("tendances.html", utilisateur=utilisateur(), admin=admin())
+    return render_template("tendances.html", utilisateur=utilisateur(), role=role())
 
 @app.route("/deconnexion")
 def deconnexion():
@@ -88,7 +88,7 @@ def connexion():
     #On vérifie si la méthode est POST pour traiter le formulaire reçu
     if request.method == 'POST':
         if request.form["pseudo"] == "":
-            return render_template('connexion.html', error = "Merci d'entrer un pseudo.", utilisateur=utilisateur(), admin=admin())
+            return render_template('connexion.html', error = "Merci d'entrer un pseudo.", utilisateur=utilisateur(), role=role())
 
         #On récupère la table "pseudo" de notre bdd
         user=db_users.find_one({"pseudo":request.form['pseudo']})
@@ -96,40 +96,40 @@ def connexion():
             if bcrypt.checkpw(request.form['mdp'].encode('utf-8'), user['mdp']):
                 session["utilisateur"] = request.form['pseudo']
                 return redirect(url_for('index'))
-        return render_template('connexion.html', error = 'Les identifiants ne sont pas reconnus.', utilisateur=utilisateur(), admin=admin())
+        return render_template('connexion.html', error = 'Les identifiants ne sont pas reconnus.', utilisateur=utilisateur(), role=role())
             
     else :
-        return render_template('connexion.html', error=None, utilisateur=utilisateur(), admin=admin())
+        return render_template('connexion.html', error=None, utilisateur=utilisateur(), role=role())
 
 @app.route("/creer_compte", methods=["GET", "POST"])
 def creer_compte():
     if request.method == "GET":
-        return render_template("createaccount.html", error=None, utilisateur=utilisateur(), admin=admin())
+        return render_template("createaccount.html", error=None, utilisateur=utilisateur(), role=role())
     else :
         if request.form["pseudo"] == "":
-            return render_template('connexion.html', error = "Merci d'entrer un pseudo.", utilisateur=utilisateur(), admin=admin())
+            return render_template('connexion.html', error = "Merci d'entrer un pseudo.", utilisateur=utilisateur(), role=role())
         
         # On vérifie que les deux mdp sont les mêmes
         if request.form["mdp"] != request.form["mdp_confirm"]:
             print("Les deux mots de passe doivent être les mêmes !")
-            return render_template("createaccount.html", error="Les deux mots de passe doivent être les mêmes !", utilisateur=utilisateur(), admin=admin())
+            return render_template("createaccount.html", error="Les deux mots de passe doivent être les mêmes !", utilisateur=utilisateur(), role=role())
         
         # On vérifie si le pseudo existe déjà
         pseudo = request.form['pseudo']
         user=db_users.find_one({"pseudo":pseudo})
         if user :
             print("Le pseudo est déjà enregistré !")
-            return render_template("createaccount.html", error="Le pseudo est déjà enregistré !", utilisateur=utilisateur(), admin=admin())
+            return render_template("createaccount.html", error="Le pseudo est déjà enregistré !", utilisateur=utilisateur(), role=role())
         
         # On vérifie si le pseudo n'est pas vide
         pseudo = request.form['pseudo']
         if pseudo == "" :
             print("Le pseudo est vide !")
-            return render_template("createaccount.html", error="Le pseudo ne doit pas être vide !", utilisateur=utilisateur(), admin=admin())
+            return render_template("createaccount.html", error="Le pseudo ne doit pas être vide !", utilisateur=utilisateur(), role=role())
         
         # On vérifie si le mdp n'est pas vide
         if request.form["mdp"] == "":
-            return render_template("createaccount.html", error="Le mot de passe doit contenir des crarctères !", utilisateur=utilisateur(), admin=admin())
+            return render_template("createaccount.html", error="Le mot de passe doit contenir des crarctères !", utilisateur=utilisateur(), role=role())
         
         # On encode le mdp
         mdp = request.form["mdp"].encode("utf-8")
@@ -137,21 +137,13 @@ def creer_compte():
         mdp_encrypt = bcrypt.hashpw(mdp, chaine_alea)
 
         # On l'ajoute à la bdd
-        db_users.insert_one({"pseudo": pseudo, "mdp":mdp_encrypt})
+        db_users.insert_one({"pseudo": pseudo, "mdp":mdp_encrypt, "role": "user"})
 
         # On ajoute l'utilisateur à la session
         session["utilisateur"] = request.form['pseudo']
 
         return redirect(url_for('index'))
 
-@app.route("/film/<id>")
-def film_page(id):
-    film = films_collection.find_one({"_id": ObjectId(id)})
-
-    if not film:
-        abort(404)
-
-    return render_template("film.html", film=film, utilisateur=utilisateur(), admin=admin())
 
 @app.route("/testfilm")
 def testfilm():
@@ -161,10 +153,29 @@ def testfilm():
 @app.route("/admin")
 def admin_route():
     # On ne peut accéder à la page qui si l'utilisateur est connecté et est dans la liste des admins
-    if admin() :
-        print(db_users.find())
-        return render_template("admin.html", db_users=db_users.find(), utilisateur=utilisateur(), admin=admin())
+    if role() == "admin":
+        # Pour décider de supprimer un film
+        films = list(films_collection.find({}))
+        return render_template("admin.html", db_users=list(db_users.find()), utilisateur=utilisateur(), role=role(), films=films)
     return redirect(url_for("index"))
+
+@app.route("/delete_film/<id>", methods=["POST"])
+def delete_film(id):
+    """
+    Supprime un film de la base de données
+    """
+    # Sécurité : On vérifie que celui qui demande est bien admin
+    if role() == "admin":
+        try: 
+            os.remove(file_path)
+            print(f"File '{file_path}' deleted successfully.")
+
+        except FileNotFoundError: print(f"File '{file_path}' not found.")
+        films_collection.delete_one({"_id": ObjectId(id)})
+        print(f"DEBUG: Film {id} supprimé")
+    
+    # On redirige vers la page admin (ou la page où tu te trouves)
+    return redirect(url_for("admin_route"))
 
 
 @app.route("/change_role", methods=["POST"])
@@ -172,40 +183,40 @@ def change_role():
     pseudo = request.form.get("username")  # ← récupéré du select
     user = db_users.find_one({"pseudo": pseudo})
 
-    if admin():
+    if role() == "admin":
         new_role = request.form.get("role")
         if new_role in ["user", "admin", "moderator"]:
             db_users.update_one({"pseudo": pseudo}, {"$set": {"role": new_role}})
 
-    return redirect(url_for("admin_route"), db_users=db_users.find())
+    return redirect(url_for("admin_route"))
 
 @app.route("/creer_compte_admin", methods=["GET", "POST"])
 def creer_compte_admin():
     if request.method == "GET":
-        return render_template("admin.html", error=None, utilisateur=utilisateur(), admin=admin())
+        return render_template("admin.html", error=None, utilisateur=utilisateur(), role=role())
     else :
         
         # On vérifie que les deux mdp sont les mêmes
         if request.form["mdp"] != request.form["mdp_confirm"]:
             print("Les deux mots de passe doivent être les mêmes !")
-            return render_template("admin.html", error="Les deux mots de passe doivent être les mêmes !", utilisateur=utilisateur(), admin=admin())
+            return render_template("admin.html", error="Les deux mots de passe doivent être les mêmes !", utilisateur=utilisateur(), role=role())
         
         # On vérifie si le pseudo existe déjà
         pseudo = request.form['pseudo']
         user=db_users.find_one({"pseudo":pseudo})
         if user :
             print("Le pseudo est déjà enregistré !")
-            return render_template("admin.html", error="Le pseudo est déjà enregistré !", utilisateur=utilisateur(), admin=admin())
+            return render_template("admin.html", error="Le pseudo est déjà enregistré !", utilisateur=utilisateur(), role=role())
         
         # On vérifie si le pseudo n'est pas vide
         pseudo = request.form['pseudo']
         if pseudo == "" :
             print("Le pseudo est vide !")
-            return render_template("admin.html", error="Le pseudo ne doit pas être vide !", utilisateur=utilisateur(), admin=admin())
+            return render_template("admin.html", error="Le pseudo ne doit pas être vide !", utilisateur=utilisateur(), role=role())
         
         # On vérifie si le mdp n'est pas vide
         if request.form["mdp"] == "":
-            return render_template("admin.html", error="Le mot de passe doit contenir des crarctères !", utilisateur=utilisateur(), admin=admin())
+            return render_template("admin.html", error="Le mot de passe doit contenir des crarctères !", utilisateur=utilisateur(), role=role())
         
         # On encode le mdp
         mdp = request.form["mdp"].encode("utf-8")
@@ -213,54 +224,76 @@ def creer_compte_admin():
         mdp_encrypt = bcrypt.hashpw(mdp, chaine_alea)
 
         # On l'ajoute à la bdd
-        db_users.insert_one({"pseudo": pseudo, "mdp":mdp_encrypt})
+        db_users.insert_one({"pseudo": pseudo, "mdp":mdp_encrypt, "role": "user"})
 
         return redirect(url_for('admin_route'))
 
 
 @app.route("/delete_user/<string:pseudo>", methods=["POST"])
 def delete_user(pseudo):
-    if admin():
+    if role() == "admin":
         db_users.delete_one({"pseudo": pseudo})
     return redirect(url_for("admin_route"))
 
 
 @app.route("/ajouter_film", methods=["GET", "POST"])
 def ajouter_film():
-    if request.method == "GET" :
+    if request.method == "GET":
         # Si l'utilisateur n'est pas connecté, on le renvoie à la page de connexion
-        if utilisateur() is None :
+        if utilisateur() is None:
             return redirect(url_for("connexion"))
-        return render_template("ajouter_film.html", utilisateur=utilisateur(), admin=admin())
-    else :
+
+        return render_template(
+            "ajouter_film.html",
+            utilisateur=utilisateur(),
+            admin=admin()
+        )
+
+    else:
+        # Vérifie que le fichier existe
+        if "poster" not in request.files:
+            return "Aucune image envoyée", 400
+
         image = request.files["poster"]
-        # On récupère l'extension de l'image
+
+        if image.filename == "":
+            return "Nom de fichier invalide", 400
+
+        # Extension
         extension = os.path.splitext(image.filename)[1].lower()
 
-        # On génère un nom aléatoire unique afin d'être sur qu'il n'y ait pas deux fois le même fichier
+        # Nom unique
         nouveau_nom = uuid.uuid4().hex + extension
 
-        # On définit le chemin complet
-        chemin_complet = os.path.join("\static\poster", nouveau_nom)
+        # Dossier réel sur le disque
+        dossier = os.path.join("static", "poster")
+        os.makedirs(dossier, exist_ok=True)
 
-        # On sauvegarde l'image'
-        image.save(chemin_complet)
+        # Chemin disque (IMPORTANT pour image.save)
+        chemin_disque = os.path.join(dossier, nouveau_nom)
 
+        # Sauvegarde image
+        image.save(chemin_disque)
+
+        # Chemin web (IMPORTANT pour HTML / MongoDB)
+        chemin_web = "/static/poster/" + nouveau_nom
+
+        # Film à insérer en base
         film = {
-            "titre" : request.form["titre"],
-            "date" : request.form["date"],
-            "duree" : request.form["duree"],
-            "synopsis" : request.form["synopsis"],
-            "genre" : request.form["genre"],
-            "studio" : request.form["studio"],
-            "producteur" : request.form["producteur"],
-            "acteurs" : request.form["acteurs"],
-            "poster" : chemin_complet
+            "titre": request.form["titre"],
+            "date": request.form["date"],
+            "duree": request.form["duree"],
+            "synopsis": request.form["synopsis"],
+            "genre": request.form["genre"],
+            "studio": request.form["studio"],
+            "producteur": request.form["producteur"],
+            "acteurs": request.form["acteurs"],
+            "poster": chemin_web
         }
 
         films_collection.insert_one(film)
 
-        return redirect(url_for("index"))
+        return redirect(url_for("films"))
 
 
 # Gestion de l'erreur 404
@@ -268,23 +301,75 @@ def ajouter_film():
 def page_not_found(e):
     return render_template("404.html"), 404
 
-#Gestion exemple Film
-@app.route("/exemple_film/<int:id>")
-def film(id):
+# Gestion exemple Film
+@app.route("/exemple_film/<id>")
+def exemple_film(id):
 
-    popular_reviews = Review.query.filter_by(film_id=id)\
-        .order_by(Review.likes.desc())\
-        .limit(3).all()
+    film_data = films_collection.find_one({
+        "_id": ObjectId(id)
+    })
 
-    recent_reviews = Review.query.filter_by(film_id=id)\
-        .order_by(Review.created_at.desc())\
-        .limit(3).all()
+    if not film_data:
+        abort(404)
 
     return render_template(
-        "film.html",
-        popular_reviews=popular_reviews,
-        recent_reviews=recent_reviews
+        "exemplefilm.html",
+        film=film_data,
+        popular_reviews=[],
+        recent_reviews=[],
+        utilisateur=utilisateur(),
+        role=role()
     )
+
+@app.route("/rate_film/<id>", methods=["POST"])
+def rate_film(id):
+
+    if utilisateur() is None:
+        return redirect(url_for("connexion"))
+
+    film = films_collection.find_one({
+        "_id": ObjectId(id)
+    })
+
+    if not film:
+        abort(404)
+
+    score = request.form.get("score")
+    comment = request.form.get("comment")
+
+    review = {
+        "film_id": id,
+        "pseudo": utilisateur(),
+        "score": int(score),
+        "comment": comment,
+    }
+
+    print(review)
+
+    return redirect(url_for("films", id=id))
+
+@app.route("/recherche", methods=["GET"])
+def recherche():
+    query = request.args.get("q")
+
+    if not query:
+        return redirect(url_for("films"))
+
+    # Recherche du film par titre (insensible à la casse)
+    film = films_collection.find_one({
+        "titre": {"$regex": query, "$options": "i"}
+    })
+
+    if film:
+        return redirect(url_for("exemple_film", id=str(film["_id"])))
+    else:
+        return render_template(
+            "films.html",
+            films=list(films_collection.find({})),
+            error="Aucun film trouvé.",
+            utilisateur=utilisateur(),
+            role=role()
+        )
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

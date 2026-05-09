@@ -1,82 +1,131 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ film.titre }} - Notation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-[#0b0f1a] text-white min-h-screen p-10">
+{% extends "base.html" %}
+{% block content %}
 
-<div class="max-w-6xl mx-auto">
-    <div class="flex gap-10">
-        <img src="{{ film.poster }}" class="w-64 rounded-xl shadow-2xl object-cover" alt="Poster du film...">
+<div class="w-full min-h-screen pt-20 bg-[#0b0f1a]  rounded-4xl border border-gray-800">
+
+<div class="max-w-6xl mx-auto px-4 py-10">
+    <!-- HEADER FILM -->
+    <div class="flex flex-col md:flex-row gap-10">
+        <!-- Poster -->
+        <div class="flex-shrink-0">
+            <img src="{{ film.poster }}" class="w-72 rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-gray-800 object-cover" alt="Poster de {{ film.titre }}">
+        </div>
+        <!-- Infos Principales -->
         <div class="flex-1">
-            <h1 class="text-5xl font-bold">{{ film.titre }}</h1>
-            <p class="text-gray-400 mt-2 text-xl">{{ film.date }} | Dirigé par {{ film.producteur }}</p>
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-6xl font-black tracking-tight text-white">{{ film.titre }}</h1>
+                    <p class="text-red-500 text-2xl font-bold mt-2">{{ film.date }} • {{ film.duree }}</p>
+                </div>
+                <!-- Note Moyenne Style Badge -->
+                <div class="bg-[#1c2233] p-4 rounded-3xl border border-gray-700 text-center min-w-[120px]">
+                    <div class="text-4xl font-black text-white">{{ film.average_score|default(0) }}%</div>
+                    <div class="text-xs uppercase tracking-widest text-gray-400 mt-1">Score Global</div>
+                </div>
+            </div>
 
-            <div class="mt-8 bg-[#1c2233] p-6 rounded-2xl w-96">
-                <div class="text-5xl font-bold mb-4">{{ film.average_score|default(0) }}%</div>
-                <div class="w-full h-6 bg-red-900 rounded-full overflow-hidden">
-                    <div class="h-full bg-red-600" style="width: {{ film.average_score|default(0) }}%;"></div>
+            <!-- Synopsis -->
+            <div class="mt-8">
+                <h3 class="text-gray-400 uppercase tracking-widest text-sm font-bold mb-2">Synopsis</h3>
+                <p class="text-gray-300 text-lg leading-relaxed italic">
+                    "{{ film.synopsis|default('Aucun synopsis disponible.') }}"
+                </p>
+            </div>
+
+            <!-- Grille de Détails Techniques -->
+            <div class="mt-8 grid grid-cols-2 gap-6 bg-[#141a28]/50 p-6 rounded-3xl border border-gray-800">
+                <div>
+                    <span class="block text-gray-500 text-xs uppercase font-bold">Genre</span>
+                    <span class="text-white font-medium">{{ film.genre|default('N/A') }}</span>
+                </div>
+                <div>
+                    <span class="block text-gray-500 text-xs uppercase font-bold">Studio</span>
+                    <span class="text-white font-medium">{{ film.studio|default('N/A') }}</span>
+                </div>
+                <div>
+                    <span class="block text-gray-500 text-xs uppercase font-bold">Producteur / Réalisateur</span>
+                    <span class="text-white font-medium">{{ film.producteur|default(film.realisateur)|default('N/A') }}</span>
+                </div>
+                <div>
+                    <span class="block text-gray-500 text-xs uppercase font-bold">Acteurs</span>
+                    <span class="text-white font-medium">{{ film.acteurs|default('N/A') }}</span>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ZONE DE NOTATION -->
     {% if utilisateur %}
-    <form action="{{ url_for('ajouter_film', id=film._id) }}" method="POST" class="mt-12 bg-[#141a28] p-8 rounded-2xl border border-gray-800">
-        <div class="flex items-center gap-6">
-            <div id="userScoreDisplay" class="text-5xl font-bold text-red-500">
-                {{ user_review.score if user_review else '50' }}
+    <form action="{{ url_for('rate_film', id=film._id) }}" method="POST" class="mt-12 bg-[#141a28] p-8 rounded-[40px] border border-gray-800 shadow-2xl">
+        <div class="flex items-center gap-10">
+            <div class="text-center">
+                <div id="userScoreDisplay" class="text-7xl font-black text-red-600 leading-none">
+                    {{ user_review.score if user_review else '50' }}
+                </div>
+                <div class="text-xs uppercase font-bold text-gray-500 mt-2">Ta Note</div>
             </div>
             <input id="userSlider" name="score" type="range" min="0" max="100" 
                    value="{{ user_review.score if user_review else 50 }}"
-                   class="w-full h-6 bg-red-900 rounded-full appearance-none cursor-pointer">
+                   class="w-full h-3 bg-gray-800 rounded-full appearance-none cursor-pointer accent-red-600">
         </div>
         <div class="mt-8">
-            <textarea name="comment" placeholder="Laisse un avis sur ce film..." 
-                      class="w-full h-32 bg-[#0b0f1a] rounded-xl p-4 resize-none focus:ring-2 focus:ring-red-600 outline-none text-white">{{ user_review.comment if user_review else '' }}</textarea>
+            <textarea name="comment" placeholder="Qu'avez-vous pensé de ce film ?" 
+                      class="w-full h-32 bg-[#0b0f1a] rounded-2xl p-5 border border-gray-800 focus:ring-2 focus:ring-red-600 outline-none text-white transition-all">{{ user_review.comment if user_review else '' }}</textarea>
         </div>
-        <button type="submit" class="mt-4 bg-red-600 hover:bg-red-700 px-8 py-3 rounded-full font-bold transition">
-            {{ 'Modifier mon avis' if user_review else 'Publier ma note' }}
-        </button>
+        <div class="flex justify-end mt-4">
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest transition-transform hover:scale-105 active:scale-95 shadow-lg">
+                {{ 'Mettre à jour' if user_review else 'Envoyer la review' }}
+            </button>
+        </div>
     </form>
     {% else %}
-    <div class="mt-12 p-8 bg-[#141a28] rounded-2xl text-center">
-        <p class="text-xl">Veuillez vous <a href="{{ url_for('connexion') }}" class="text-red-500 underline">connecter</a> pour noter ce film.</p>
+    <div class="mt-12 p-10 bg-[#141a28] rounded-[40px] text-center border border-dashed border-gray-700">
+        <p class="text-xl text-gray-400">Envie de noter ce film ? <a href="{{ url_for('connexion') }}" class="text-red-500 font-bold hover:underline">Connecte-toi ici</a>.</p>
     </div>
     {% endif %}
 
-    <h2 class="text-3xl font-bold mb-6 mt-16 text-red-600">Avis récents</h2>
-    <div class="grid grid-cols-1 gap-6">
-        {% for review in recent_reviews %}
-        <div class="bg-[#1c2233] p-6 rounded-2xl border border-gray-700">
-            <div class="flex justify-between items-start">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center font-bold">
-                        {{ review.pseudo[0]|upper }}
-                    </div>
-                    <div>
-                        <p class="font-semibold text-lg">{{ review.pseudo }}</p>
-                        <p class="text-gray-500 text-sm">{{ review.date.strftime('%d/%m/%Y') if review.date }}</p>
-                    </div>
-                </div>
-                <div class="text-3xl font-bold">{{ review.score }}</div>
-            </div>
-            <p class="mt-4 text-gray-300">{{ review.comment }}</p>
-            
-            <div class="flex justify-between items-center mt-6">
-                <a href="{{ url_for('like_review', review_id=review._id) }}" 
-                   class="flex items-center gap-2 text-red-500 hover:scale-110 transition">
-                    <span class="text-2xl">❤️</span>
-                    <span class="font-bold">{{ review.likes|default(0) }}</span>
-                </a>
-            </div>
+    <!-- AVIS RÉCENTS -->
+    <div class="mt-20">
+        <div class="flex items-center gap-4 mb-10">
+            <h2 class="text-4xl font-black uppercase tracking-tighter">Avis de la communauté</h2>
+            <div class="h-1 flex-1 bg-gradient-to-right from-red-600 to-transparent opacity-20"></div>
         </div>
-        {% endfor %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for review in recent_reviews %}
+            <div class="bg-[#1c2233] p-8 rounded-[35px] border border-gray-800 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-tr from-red-600 to-red-900 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">
+                                {{ review.pseudo[0]|upper }}
+                            </div>
+                            <div>
+                                <p class="font-bold text-white">{{ review.pseudo }}</p>
+                                <p class="text-gray-500 text-xs">{{ review.date.strftime('%d %b %Y') if review.date }}</p>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-red-500 bg-[#0b0f1a] px-4 py-2 rounded-xl border border-gray-800">
+                            {{ review.score }}
+                        </div>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed italic">"{{ review.comment }}"</p>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-800 flex justify-between items-center">
+                    <a href="{{ url_for('like_review', review_id=review._id) }}" 
+                       class="group flex items-center gap-3 bg-[#0b0f1a] px-5 py-2 rounded-full border border-gray-800 hover:border-red-600 transition-all">
+                        <span class="text-xl group-hover:scale-125 transition-transform">❤️</span>
+                        <span class="font-bold text-sm">{{ review.likes|default(0) }} Likes</span>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-gray-500 italic">Soyez le premier à donner votre avis sur ce film !</p>
+            {% endfor %}
+        </div>
     </div>
 </div>
-
 <script>
     const slider = document.getElementById("userSlider");
     const display = document.getElementById("userScoreDisplay");
@@ -87,4 +136,4 @@
     }
 </script>
 </body>
-</html>
+{% endblock %}

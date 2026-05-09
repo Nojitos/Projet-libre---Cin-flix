@@ -68,31 +68,71 @@
         </section>
 
         <!-- Gestion des rôles -->
-     <div>
-        <h2 class="text-2xl font-semibold mb-6 mt-16">🔐 Gestion des rôles</h2>
+        <div>
+            <h2 class="text-2xl font-semibold mb-6 mt-16">🔐 Gestion des rôles</h2>
 
-        <div class="bg-gray-900 p-8 rounded-2xl shadow-lg max-w-xl">
-            <form method="POST" action="/change_role" class="flex flex-col gap-4">
-                <select name="username" class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
-                    {% for user in db_users %}
-                        <option value="{{ user['pseudo'] }}">{{ user['pseudo'] }}</option>
-                    {% endfor %}
-                </select>
+            <div class="bg-gray-900 p-8 rounded-2xl shadow-lg max-w-xl">
+                <form method="POST" action="/change_role" class="flex flex-col gap-4">
+                    <select name="username" class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+                        {% for user in db_users %}
+                            <option value="{{ user['pseudo'] }}">{{ user['pseudo'] }}</option>
+                        {% endfor %}
+                    </select>
 
-                <select name="role" class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
-                    <option value="user">Utilisateur🧙‍♂️</option>
-                    <option value="admin">Administrateur👑</option>
-                    <option value="moderator">Modérateur🖌️</option>
-                </select>
+                    <select name="role" class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+                        <option value="user">Utilisateur🧙‍♂️</option>
+                        <option value="admin">Administrateur👑</option>
+                        <option value="moderator">Modérateur🖌️</option>
+                    </select>
 
-                <button class="bg-blue-600 hover:bg-blue-700 py-3 rounded-full font-semibold transition" type="submit">
-                    Changer le rôle
-                </button>
-            </form>
+                    <button class="bg-blue-600 hover:bg-blue-700 py-3 rounded-full font-semibold transition" type="submit">
+                        Changer le rôle
+                    </button>
+                </form>
 
-            
-     </div>
+                
+            </div>
+        </div>
     </div>
-</div>
 
+
+    <!-- SECTION GESTION FILMS -->
+        <section class="pt-12">
+            <h2 class="text-2xl font-semibold mb-8">🎬 Catalogue des films</h2>
+            <div class="overflow-hidden rounded-[2.5rem] border border-gray-800 bg-[#1e2129] shadow-2xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-black/60">
+                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">Poster</th>
+                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">Titre</th>
+                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">Réalisateur</th>
+                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">Année</th>
+                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-800/50">
+                            {% for film in films %}
+                            <tr class="hover:bg-white/5 transition duration-150">
+                                <td class="p-6">
+                                    <a href="{{ url_for('exemple_film', id=film['_id']) }}"> <img src="{{ film['poster'] }}" class="w-14 h-20 object-cover rounded-xl shadow-md hover:scale-105"> </a>
+                                </td>
+                                <td class="p-6 font-semibold text-white text-lg">{{ film["titre"] }}</td>
+                                <td class="p-6 text-gray-300">{{ film["producteur"] }}</td>
+                                <td class="p-6 text-gray-400 font-mono">{{ film["date"] }}</td>
+                                <td class="p-6 text-center">
+                                    <form action="{{ url_for('delete_film', id=film['_id']|string) }}" method="POST" onsubmit="return confirm('Supprimer ce film ?');">
+                                        <button type="submit" class="w-12 h-12 flex items-center justify-center bg-red-500/10 hover:scale-105 text-red-500 hover:bg-red-500 hover:text-white rounded-full transition mx-auto border border-red-500/20">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+</div>
 {% endblock %}
