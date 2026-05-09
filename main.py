@@ -68,6 +68,7 @@ def index():
 @app.route("/films")
 def films():
     films = list(films_collection.find({}))
+    print(films[0]['poster'])
     return render_template("films.html", films=films, utilisateur=utilisateur(), role=role())
 
 @app.route("/series")
@@ -166,11 +167,16 @@ def delete_film(id):
     """
     # Sécurité : On vérifie que celui qui demande est bien admin
     if role() == "admin":
+        film_data = films_collection.find_one({
+            "_id": ObjectId(id)
+        })
         try: 
-            os.remove(file_path)
-            print(f"File '{file_path}' deleted successfully.")
+            os.remove(film_data["poster"])
+            print(f"File '{film_data["poster"]}' deleted successfully.")
 
-        except FileNotFoundError: print(f"File '{file_path}' not found.")
+        except FileNotFoundError: 
+            print(f"File '{film_data["poster"]}' not found.")
+        
         films_collection.delete_one({"_id": ObjectId(id)})
         print(f"DEBUG: Film {id} supprimé")
     
@@ -246,7 +252,7 @@ def ajouter_film():
         return render_template(
             "ajouter_film.html",
             utilisateur=utilisateur(),
-            admin=admin()
+            role=role()
         )
 
     else:
@@ -276,7 +282,7 @@ def ajouter_film():
         image.save(chemin_disque)
 
         # Chemin web (IMPORTANT pour HTML / MongoDB)
-        chemin_web = "/static/poster/" + nouveau_nom
+        chemin_web = chemin_disque
 
         # Film à insérer en base
         film = {
@@ -308,6 +314,10 @@ def exemple_film(id):
     film_data = films_collection.find_one({
         "_id": ObjectId(id)
     })
+
+    print(type(film_data))
+
+    print(film_data["poster"])
 
     if not film_data:
         abort(404)
