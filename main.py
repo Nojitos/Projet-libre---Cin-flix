@@ -389,7 +389,14 @@ def like_review(id):
 
 @app.route("/delete_review/<id>", methods=["POST"])
 def delete_review(id):
-    pass
+    # Sécurité : On vérifie que celui qui demande est bien admin
+    if role() in ['admin', 'moderator']:
+        
+        comment_collection.delete_one({"_id": ObjectId(id)})
+        print(f"DEBUG: Film {id} supprimé")
+    
+    # On redirige vers la page admin (ou la page où tu te trouves)
+    return redirect(request.referrer)
 
 @app.route("/recherche", methods=["GET"])
 def recherche():
