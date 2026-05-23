@@ -2,52 +2,114 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-5xl font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] pt-30 pb-10">
-        Cherchez moins, regardez plus.
-    </h1>
+    <section class="relative min-h-[80vh] flex flex-col justify-center items-center">
 
-    {% if utilisateur != none %}
-    <h2 class="pb-10">Bonjour <span class="font-bold">{{ utilisateur }}</span> !!!</h2>
-    {% endif %}
+    <!-- Overlay sombre -->
+    <div class="absolute inset-0 bg-black/40 rounded-[3rem] backdrop-blur-[2px]"></div>
 
-    <h3>Découvrez l’avis de milliers de fans comme vous.</h3>
+    <div class="relative z-10 max-w-4xl">
 
-    <button class="mt-6 w-40 bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full font-semibold text-base">
-        <a href="#populaires">C’est parti!</a>
-    </button>
+        <h1 class="text-7xl font-bold leading-tight mb-8 drop-shadow-[0_10px_25px_rgba(0,0,0,.9)]">
+            Cherchez moins.<br>
+            <span class="text-red-500">
+                Regardez plus.
+            </span>
+        </h1>
+
+        {% if utilisateur != none %}
+        <h2 class="text-2xl mb-8">
+            Bonjour
+            <span class="font-bold text-red-500">
+                {{ utilisateur }}
+            </span>
+            👋
+        </h2>
+        {% endif %}
+
+        <p class="text-gray-200 text-xl max-w-2xl mx-auto">
+            Découvrez les avis de milliers de passionnés et trouvez votre prochain film préféré.
+        </p>
+
+        <div class="flex justify-center gap-5 mt-10">
+
+            <a href="#populaires">
+                <button class="glass-btn px-10 py-4 text-lg hover:scale-105 transition">
+                    Découvrir 🔥
+                </button>
+            </a>
+
+            <a href="/films">
+                <button class="glass px-10 py-4">
+                    Catalogue 🎬
+                </button>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
 
     <!-- SECTION POPULAIRES -->
-    <section id="populaires" class="w-full bg-black mt-20 py-12 rounded-4xl border border-gray-800">
+    <section id="populaires"
+        class="
+        relative min-h-[80vh] flex flex-col justify-center items-center mt-20
+        ">
+
+        <!-- Overlay sombre -->
+    <div class="absolute inset-0 bg-black/40 rounded-[3rem] backdrop-blur-[2px]"></div>
         
         <div class="max-w-6xl mx-auto px-6">
-            
-            <h1 class="text-3xl font-bold text-white mb-10">
-                Les plus populaires🔥
-            </h1>
+            <h2 class="text-5xl font-bold mb-12 text-center drop-shadow-[0_10px_25px_rgba(0,0,0,.9)]">
+                Les films les plus populaires <span class="text-red-500">🔥</span>
+            </h2>
 
             <!-- GRILLE FILMS -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
                 
                 {% for film in films %}
-                <article class="flex flex-col items-center text-center">
+                <article class="group relative overflow-hidden rounded-[2rem] transition duration-500 hover:-translate-y-3">
                     
                     <div class="w-40">
-                        <img src="{{ film['poster'] }}" 
-                             alt="poster du film" 
-                             class="w-full h-full object-cover rounded-[2rem] shadow-md hover:scale-105 transition duration-300">
+                        <a href="{{ url_for('exemple_film', id=film['_id']) }}"></a>
+                        <img
+                            src="{{ film['poster'] }}"
+                            alt="poster du film"
+                            class="
+                            w-full
+                            h-[250px]
+                            object-cover
+                            rounded-[2rem]
+                            group-hover:scale-110
+                            duration-500
+                            shadow-2xl
+                            "
+                            >
+                            
                     </div>
 
-                    <div class="mt-3">
-                        <h3 class="text-red-600 font-medium leading-tight">
-                            {{ film["titre"] }}
+                    <div class="
+                        absolute
+                        bottom-0
+                        w-full
+                        bg-gradient-to-t
+                        from-black
+                        to-transparent
+                        p-5
+                        opacity-0
+                        group-hover:opacity-100
+                        transition
+                        ">
+
+                        <h3 class="font-bold text-white">
+                        {{ film["titre"] }}
                         </h3>
-                        <h4 class="text-red-600 text-sm">
-                            {{ film["realisateur"] }}
-                        </h4>
-                        <h4 class="text-red-600 text-sm opacity-80">
-                            {{ film["date"] }}
-                        </h4>
-                    </div>
+
+                        <p class="text-red-400">
+                        {{ film["realisateur"] }}
+                        </p>
+
+                        </div>
 
                 </article>
                 {% endfor %}
@@ -57,7 +119,7 @@
             <!-- BOUTON CENTRÉ -->
             <div class="flex justify-center mt-12">
                 <a href="/films">
-                    <button class="bg-red-600 hover:scale-105 transition duration-300 px-8 py-3 rounded-full font-semibold">
+                    <button class="bg-red-600 hover:scale-105 transition duration-300 px-8 py-3 rounded-full font-semibold glass-btn hover:bg-red-700">
                         Voir +
                     </button>
                 </a>

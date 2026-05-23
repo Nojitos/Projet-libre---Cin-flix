@@ -14,6 +14,7 @@ load_dotenv()
 mongo = MongoClient(os.getenv('TOKEN'))
 films_collection = mongo.db.film
 db_users = mongo.db.account
+comment_collection = mongo.db.comments
 
 # Création de l'app
 app = Flask(__name__)
@@ -177,6 +178,8 @@ def delete_film(id):
         except FileNotFoundError: 
             print(f"File '{film_data["poster"]}' not found.")
         
+        comment_collection.delete_many({"film_id": ObjectId(id)})
+        
         films_collection.delete_one({"_id": ObjectId(id)})
         print(f"DEBUG: Film {id} supprimé")
     
@@ -321,12 +324,21 @@ def exemple_film(id):
 
     if not film_data:
         abort(404)
+    
+    commentaires = list(comment_collection.find({"film_id": ObjectId(id)}))
+
+    if commentaires:
+        # On extrait tous les scores dans une nouvelle liste et on calcul la moyenne
+        scores = [c["score"] for c in commentaires]
+        score = str(int(sum(scores) / len(scores)))
+    else:
+        score = "?"
 
     return render_template(
         "exemplefilm.html",
         film=film_data,
-        popular_reviews=[],
-        recent_reviews=[],
+        reviews=commentaires,
+        score=score,
         utilisateur=utilisateur(),
         role=role()
     )
@@ -348,15 +360,36 @@ def rate_film(id):
     comment = request.form.get("comment")
 
     review = {
-        "film_id": id,
+        "film_id": ObjectId(id),
         "pseudo": utilisateur(),
         "score": int(score),
         "comment": comment,
+        "likers": []
     }
 
-    print(review)
+    comment_collection.insert_one(review)
 
-    return redirect(url_for("films", id=id))
+    return redirect(url_for("exemple_film", id=id))
+
+@app.route("/like_review/<id>")
+def like_review(id):
+    user = utilisateur()
+    if not user: return redirect(url_for("connexion"))
+
+    # On récupère le commentaire
+    review = comment_collection.find_one({"_id": ObjectId(id)})
+    
+    # Si l'utilisateur a déjà liké, on retire (pull), sinon on ajoute (addToSet)
+    if review and user in review["likers"]:
+        comment_collection.update_one({"_id": ObjectId(id)}, {"$pull": {"likers": user}})
+    else:
+        comment_collection.update_one({"_id": ObjectId(id)}, {"$addToSet": {"likers": user}})
+
+    return redirect(request.referrer)
+
+@app.route("/delete_review/<id>", methods=["POST"])
+def delete_review(id):
+    pass
 
 @app.route("/recherche", methods=["GET"])
 def recherche():

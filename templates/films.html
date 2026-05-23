@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="bg-black w-full p-14 rounded-4xl border border-gray-800">
+<div class="bg-[#0b0f1a] border border-gray-800 w-full p-14 rounded-4xl">
 
     <div class="w-full flex justify-between items-center mb-8">
         <h1 class="text-5xl font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
@@ -10,14 +10,30 @@
         </h1>
 
         <div class="relative inline-block text-left">
-            <select class="bg-[#2D2D3A] text-white px-6 py-2 rounded-full border-none outline-none appearance-none pr-10 cursor-pointer hover:bg-[#3D3D4A] transition">
-                <option value="">Choisir ↓</option>
-                <option value="">Action</option>
-                <option value="drame">Drame</option>
-                <option value="comedie">Comédie</option>
-                <option value="sf">Science-Fiction</option>
-            </select>
-        </div>
+    <select class="bg-[#2D2D3A]/70 backdrop-blur-md text-white px-6 py-2 rounded-full border border-white/10 outline-none appearance-none pr-10 cursor-pointer hover:bg-[#3D3D4A]/70 transition glass">
+        
+        <option value="" class="bg-black text-white">
+            Choisir ↓
+        </option>
+
+        <option value="action" class="bg-black text-white">
+            Action
+        </option>
+
+        <option value="drame" class="bg-black text-white">
+            Drame
+        </option>
+
+        <option value="comedie" class="bg-black text-white">
+            Comédie
+        </option>
+
+        <option value="sf" class="bg-black text-white">
+            Science-Fiction
+        </option>
+
+    </select>
+</div>
     </div>
 
     <!-- CONTENEUR DES FILMS -->

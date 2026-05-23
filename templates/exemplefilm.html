@@ -20,7 +20,7 @@
                 </div>
                 <!-- Note Moyenne Style Badge -->
                 <div class="bg-[#1c2233] p-4 rounded-3xl border border-gray-700 text-center min-w-[120px]">
-                    <div class="text-4xl font-black text-white">{{ film.average_score|default(0) }}%</div>
+                    <div class="text-4xl font-black text-white">{{ score }} %</div>
                     <div class="text-xs uppercase tracking-widest text-gray-400 mt-1">Score Global</div>
                 </div>
             </div>
@@ -93,31 +93,51 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {% for review in recent_reviews %}
+            {% for review in reviews %}
             <div class="bg-[#1c2233] p-8 rounded-[35px] border border-gray-800 flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-gradient-to-tr from-red-600 to-red-900 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">
-                                {{ review.pseudo[0]|upper }}
+                
+                {% if role in ['admin', 'moderator'] %}
+                <form action="{{ url_for('delete_review', review_id=review._id|string) }}" method="POST" 
+                      class="absolute top-6 right-6 z-10" 
+                      onsubmit="return confirm('Supprimer ce commentaire définitivement ?');">
+                    <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors p-2 bg-[#0b0f1a] rounded-xl border border-gray-800 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                </form>
+                {% endif %}
+
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-tr from-red-600 to-red-900 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">
+                            {{ review.pseudo[0]|upper }}
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">{{ review.pseudo }}</p>
+                            <p class="text-gray-500 text-xs">{{ review.date.strftime('%d %b %Y') if review.date }}</p>
                             </div>
-                            <div>
-                                <p class="font-bold text-white">{{ review.pseudo }}</p>
-                                <p class="text-gray-500 text-xs">{{ review.date.strftime('%d %b %Y') if review.date }}</p>
+                            </div>
+                            <div class="text-3xl font-black text-red-500 bg-[#0b0f1a] px-4 py-2 rounded-xl border border-gray-800">
+                                {{ review.score }}
                             </div>
                         </div>
-                        <div class="text-3xl font-black text-red-500 bg-[#0b0f1a] px-4 py-2 rounded-xl border border-gray-800">
-                            {{ review.score }}
-                        </div>
-                    </div>
                     <p class="text-gray-300 leading-relaxed italic">"{{ review.comment }}"</p>
                 </div>
                 
                 <div class="mt-8 pt-6 border-t border-gray-800 flex justify-between items-center">
-                    <a href="{{ url_for('like_review', review_id=review._id) }}" 
-                       class="group flex items-center gap-3 bg-[#0b0f1a] px-5 py-2 rounded-full border border-gray-800 hover:border-red-600 transition-all">
-                        <span class="text-xl group-hover:scale-125 transition-transform">❤️</span>
-                        <span class="font-bold text-sm">{{ review.likes|default(0) }} Likes</span>
+                    <a href="{{ url_for('like_review', id=review._id|string) }}" class="group flex items-center gap-3 bg-[#0b0f1a] px-5 py-2 rounded-full border {% if utilisateur in review.likers %}border-red-600{% else %}border-gray-800{% endif %} hover:border-red-600 transition-all">
+                        <span class="text-xl group-hover:scale-125 transition-transform">
+                            {% if utilisateur in review.likers %}
+                                ❤️ <!-- Coeur plein si déjà liké -->
+                            {% else %}
+                                🤍 <!-- Coeur vide si pas encore liké -->
+                            {% endif %}
+                        </span>
+
+                        <span class="font-bold text-sm {% if utilisateur in review.likers %}text-red-500{% else %}text-gray-400{% endif %}">
+                            {{ review.likers|length if review.likers else 0 }} Likes
+                        </span>
                     </a>
                 </div>
             </div>

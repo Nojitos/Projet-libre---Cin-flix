@@ -3,98 +3,364 @@
 
 {% block content %}
 
-<div class="min-h-screen flex items-center justify-center">
+<div class="min-h-[90vh] flex items-center justify-center px-6">
 
-    <div class="bg-zinc-900 text-white px-10 py-10 border-2 border-red-600 rounded-2xl w-[420px] flex flex-col gap-6 shadow-xl">
+    <div class="
+    relative
+    bg-[#0b0f1a]
+    border
+    border-gray-800
+    w-full
+    max-w-[520px]
+    p-10
+    rounded-[2.5rem]
+    overflow-hidden
+    ">
 
-        <h1 class="text-4xl font-extrabold text-center">
-            Bonjour !
-        </h1>
-
-        <p class="text-center text-gray-300">
-            Créez votre compte pour retrouver vos films & séries favoris.
-        </p>
-
-        {% if error is not none %}
-        <div class="text-red-600 text-sm font-medium mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-            </svg>
-            <span>{{ error }}</span>
+        <!-- GLOW -->
+        <div class="
+        absolute
+        -top-20
+        -left-20
+        w-72
+        h-72
+        bg-red-600/20
+        blur-[110px]
+        rounded-full
+        ">
         </div>
-        {% endif %}
 
-        <form method="POST" action="{{ url_for('creer_compte') }}">
+        <div class="relative z-10">
 
-            <!-- PSEUDO -->
-            <div class="flex flex-col gap-2">
-                <label class="text-sm text-gray-400">PSEUDO</label>
+            <!-- OSCAR -->
 
-                <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
-                    
-                    <img src="{{ url_for('static', filename='pseudo.png') }}" class="w-5 h-5 mr-3 opacity-70">
+            <div class="flex justify-center mb-6">
 
-                    <input 
-                        type="text" 
-                        placeholder="Votre pseudo"
-                        class="bg-transparent w-full outline-none text-white placeholder-gray-500"
+                <img
+                src="/static/oscar.png"
+
+                class="
+                h-24
+                object-contain
+                drop-shadow-[0_0_20px_rgba(255,0,0,.4)]
+                ">
+
+            </div>
+
+            <!-- TITRE -->
+
+            <h1 class="
+            text-5xl
+            font-bold
+            text-center
+            mb-3
+            ">
+
+                Bienvenue 🎬
+
+            </h1>
+
+            <p class="
+            text-center
+            text-gray-300
+            text-lg
+            mb-10
+            ">
+
+                Créez votre compte pour retrouver
+                vos films et séries favoris.
+
+            </p>
+
+            <!-- ERREUR -->
+
+            {% if error is not none %}
+
+            <div class="
+            bg-red-500/10
+            border
+            border-red-500/30
+            text-red-400
+            rounded-2xl
+            px-5
+            py-4
+            mb-8
+            flex
+            items-center
+            ">
+
+                <svg
+                class="w-5 h-5 mr-3"
+                fill="currentColor"
+                viewBox="0 0 20 20">
+
+                    <path
+                    fill-rule="evenodd"
+
+                    d="
+                    M18 10a8 8 0 11-16 0
+                    8 8 0 0116 0zm-7-4a1
+                    1 0 11-2 0 1 1 0
+                    012 0zM9 9a1 1 0
+                    000 2v3a1 1 0
+                    001 1h1a1 1 0
+                    100-2v-3a1 1 0
+                    00-1-1H9z
+                    "
+
+                    clip-rule="evenodd">
+
+                    </path>
+
+                </svg>
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+            <form
+            method="POST"
+            action="{{ url_for('creer_compte') }}"
+
+            class="space-y-6">
+
+                <!-- PSEUDO -->
+
+                <div>
+
+                    <label class="
+                    block
+                    text-sm
+                    uppercase
+                    tracking-wider
+                    text-gray-400
+                    mb-2
+                    ">
+
+                        Pseudo
+
+                    </label>
+
+                    <div class="
+                    glass
+                    flex
+                    items-center
+                    px-5
+                    py-4
+                    ">
+
+                        <img
+
+                        src="{{ url_for(
+                        'static',
+                        filename='pseudo.png'
+                        ) }}"
+
+                        class="
+                        w-5
+                        h-5
+                        mr-4
+                        opacity-70
+                        ">
+
+                        <input
+
+                        type="text"
                         name="pseudo"
-                        required
-                    >
+
+                        placeholder=
+                        "Votre pseudo"
+
+                        class="
+                        bg-transparent
+                        outline-none
+                        w-full
+                        text-white
+                        placeholder-gray-400
+                        "
+
+                        required>
+
+                    </div>
+
                 </div>
-            </div>
 
+                <!-- MDP -->
 
-            <!-- PASSWORD -->
-            <div class="flex flex-col gap-2">
-                <label class="text-sm text-gray-400">MOT DE PASSE</label>
+                <div>
 
-                <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
-                    
-                    <img src="{{ url_for('static', filename='verrouiller.png') }}" class="w-5 h-5 mr-3 opacity-70">
+                    <label class="
+                    block
+                    text-sm
+                    uppercase
+                    tracking-wider
+                    text-gray-400
+                    mb-2
+                    ">
 
-                    <input 
-                        type="password" 
-                        placeholder="Votre mot de passe"
-                        class="bg-transparent w-full outline-none text-white placeholder-gray-500"
+                        Mot de passe
+
+                    </label>
+
+                    <div class="
+                    glass
+                    flex
+                    items-center
+                    px-5
+                    py-4
+                    ">
+
+                        <img
+
+                        src="{{ url_for(
+                        'static',
+                        filename='verrouiller.png'
+                        ) }}"
+
+                        class="
+                        w-5
+                        h-5
+                        mr-4
+                        opacity-70
+                        ">
+
+                        <input
+
+                        type="password"
                         name="mdp"
-                        required
-                    >
+
+                        placeholder=
+                        "Votre mot de passe"
+
+                        class="
+                        bg-transparent
+                        outline-none
+                        w-full
+                        text-white
+                        placeholder-gray-400
+                        "
+
+                        required>
+
+                    </div>
+
                 </div>
-            </div>
 
-            <!-- PASSWORD CONFIRMATION -->
-            <div class="flex flex-col gap-2">
-                <label class="text-sm text-gray-400">CONFIRMER LE MOT DE PASSE</label>
+                <!-- CONFIRMATION -->
 
-                <div class="flex items-center bg-zinc-800 px-4 py-3 rounded-xl border border-zinc-700 focus-within:border-red-500 transition">
-                    
-                    <img src="{{ url_for('static', filename='verrouiller.png') }}" class="w-5 h-5 mr-3 opacity-70">
+                <div>
 
-                    <input 
-                        type="password" 
-                        placeholder="Confirmez votre mot de passe"
-                        class="bg-transparent w-full outline-none text-white placeholder-gray-500"
+                    <label class="
+                    block
+                    text-sm
+                    uppercase
+                    tracking-wider
+                    text-gray-400
+                    mb-2
+                    ">
+
+                        Confirmation
+
+                    </label>
+
+                    <div class="
+                    glass
+                    flex
+                    items-center
+                    px-5
+                    py-4
+                    ">
+
+                        <img
+
+                        src="{{ url_for(
+                        'static',
+                        filename='verrouiller.png'
+                        ) }}"
+
+                        class="
+                        w-5
+                        h-5
+                        mr-4
+                        opacity-70
+                        ">
+
+                        <input
+
+                        type="password"
+
                         name="mdp_confirm"
-                        required
-                    >
+
+                        placeholder=
+                        "Confirmez votre mot de passe"
+
+                        class="
+                        bg-transparent
+                        outline-none
+                        w-full
+                        text-white
+                        placeholder-gray-400
+                        "
+
+                        required>
+
+                    </div>
+
                 </div>
+
+                <!-- BTN -->
+
+                <button
+
+                type="submit"
+
+                class="
+                glass-btn
+                w-full
+                py-4
+                text-lg
+                font-bold
+                hover:scale-[1.02]
+                transition
+                duration-300
+                ">
+
+                    Créer mon compte ✨
+
+                </button>
+
+            </form>
+
+            <!-- LOGIN -->
+
+            <div class="
+            mt-8
+            text-center
+            text-gray-400
+            ">
+
+                Vous avez déjà un compte ?
+
+                <a
+
+                href="/connexion"
+
+                class="
+                text-red-400
+                hover:text-red-300
+                transition
+                font-semibold
+                ">
+
+                    Se connecter
+
+                </a>
+
             </div>
 
-
-            <!-- BUTTON -->
-            <button type="submit" class="mt-4 w-full bg-red-600 hover:bg-red-700 transition py-3 rounded-xl font-semibold">
-                Créer un compte
-            </button>
-        
-        </form>
-
-
-        <!-- SIGN UP -->
-        <p class="text-center text-gray-400 text-sm">
-            Vous avez déjà un compte ?
-            <a href="/connexion" class="text-red-500 hover:underline">Se connecter</a>
-        </p>
+        </div>
 
     </div>
 

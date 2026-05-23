@@ -17,50 +17,258 @@
 html {
   scroll-behavior: smooth;
 }
+
+.glass {
+          position: relative;
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(2px) saturate(180%);
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          border-radius: 2rem;
+          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2), 
+                      inset 0 4px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .glass::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 2rem;
+          backdrop-filter: blur(1px);
+          box-shadow: inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
+                      inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
+          opacity: 0.6;
+          z-index: -1;
+          filter: blur(1px) drop-shadow(10px 4px 6px black) brightness(115%);
+        }
+
+        .glass:hover {
+          filter: brightness(1.05) drop-shadow(0 4px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        .glass-btn {
+          position: relative;
+          background: rgba(255, 0, 0, 0.678);
+          backdrop-filter: blur(2px) saturate(180%);
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          border-radius: 2rem;
+          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2), 
+                      inset 0 4px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-btn::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 2rem;
+          backdrop-filter: blur(1px);
+          box-shadow: inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
+                      inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
+          opacity: 0.6;
+          z-index: -1;
+          filter: blur(1px) drop-shadow(10px 4px 6px black) brightness(115%);
+        }
+
+        .glass-btn:hover {
+          filter: brightness(1.05) drop-shadow(0 4px 15px rgba(0, 0, 0, 0.3));
+        }
 </style>
 
 <body style="background-image: url('/static/header_bg.jpeg');" class="bg-cover bg-center bg-no-repeat bg-fixed flex flex-col min-h-screen font-author">
-    <header class="fixed top-0 w-full backdrop-blur-md z-50 bg-black/20">
-    <nav class="relative w-full flex items-center justify-between px-10 text-white">
-        
-        <!-- Logo -->
-        <div class="w-38 min-w-20 max-w-38">
-            <a href="/">
-                <img src="/static/logo.png" alt="logo">
-            </a>
-        </div>
+    <header class="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-xl border-b border-white/10">
 
-        <!-- Liens CENTRÉS -->
-        <div class="absolute left-1/2 -translate-x-1/2 flex items-center">
-            <a href="/#" class="px-4">Accueil</a>
-            <a href="/films" class="px-4">Films</a>
-            <a href="/series" class="px-4">Séries</a>
-            <a href="/tendances" class="px-4">Tendances</a>
-        </div>
+<nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between text-white">
 
-        <!-- Search + Connexion -->
-        <div class="flex items-center space-x-4">
-            <form action="{{ url_for('recherche') }}" method="GET">
-                <input type="text" name="q" placeholder="🔍 Rechercher un film..." class="px-4 py-2 rounded-full text-white backdrop-blur-xl border-2 border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                    {% if error %}
-                        <p style="color:red;">{{ error }}</p>
-                    {% endif %}
-            </form>
-        
-            {% if utilisateur == none %}
-            <a href="/connexion">Connexion</a>
-            {% else %}
-            <a href="/deconnexion">Déconnexion</a>
-            <a href="/ajouter_film">Publier🎬</a>
-            {% endif %}
+    <!-- LOGO -->
+    <a href="/" class="w-32">
+        <img src="/static/logo.png"
+        class="hover:scale-105 transition">
+    </a>
 
-            {% if role == "admin" %}
-            <a href="/admin">Admin👑</a>
-            {% endif %}
-        </div>
+    <!-- DESKTOP -->
+    <div class="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
 
-    </nav>
+        <a href="/#" class="hover:text-red-400">Accueil</a>
+
+        <a href="/films"
+        class="hover:text-red-400">
+            Films
+        </a>
+
+        <a href="/series"
+        class="hover:text-red-400">
+            Séries
+        </a>
+
+        <a href="/tendances"
+        class="hover:text-red-400">
+            Tendances
+        </a>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="hidden lg:flex items-center gap-4">
+
+        <form action="{{ url_for('recherche') }}" method="GET">
+
+            <input
+            type="text"
+
+            name="q"
+
+            placeholder="🔍 Rechercher..."
+
+            class="
+            px-4
+            py-2
+
+            bg-black/40
+
+            rounded-full
+
+            outline-none
+
+            border
+
+            border-white/10
+            ">
+
+        </form>
+
+        {% if utilisateur == none %}
+
+        <a href="/connexion"
+        class="bg-red-600 px-5 py-2 rounded-full">
+            Connexion
+        </a>
+
+        {% else %}
+
+        <a href="/ajouter_film">
+            🎬
+        </a>
+
+        <a href="/deconnexion">
+            Déconnexion
+        </a>
+
+        {% endif %}
+
+        {% if role=="admin" %}
+        <a href="/admin">👑</a>
+        {% endif %}
+
+    </div>
+
+    <!-- MOBILE -->
+
+    <button id="menuBtn"
+    class="lg:hidden text-3xl">
+
+        ☰
+
+    </button>
+
+</nav>
+
+<div id="menu"
+
+class="
+hidden
+lg:hidden
+
+bg-black/80
+
+backdrop-blur-xl
+
+text-white
+">
+
+<div class="flex flex-col gap-5 p-6">
+
+    <a href="/#">Accueil</a>
+
+    <a href="/films">Films</a>
+
+    <a href="/series">Séries</a>
+
+    <a href="/tendances">
+        Tendances
+    </a>
+
+    <form action="{{ url_for('recherche') }}" method="GET">
+
+        <input
+
+        type="text"
+
+        name="q"
+
+        placeholder=
+        "🔍 Rechercher..."
+
+        class="
+        w-full
+
+        px-4
+        py-3
+
+        rounded-full
+
+        bg-black/40
+        ">
+
+    </form>
+
+    {% if utilisateur == none %}
+
+    <a href="/connexion"
+    class="
+    bg-red-600
+
+    text-center
+
+    py-3
+
+    rounded-full
+    ">
+
+        Connexion
+
+    </a>
+
+    {% else %}
+
+    <a href="/ajouter_film">
+        Publier 🎬
+    </a>
+
+    <a href="/deconnexion">
+        Déconnexion
+    </a>
+
+    {% endif %}
+
+</div>
+
+</div>
+
 </header>
+
+<script>
+menuBtn.onclick=()=>{
+menu.classList.toggle("hidden")
+}
+</script>
 
 
 
@@ -69,49 +277,193 @@ html {
         {% endblock %}
     </main>
 
-    <footer class="bg-[#141414] text-white px-5 py-10 font-author">
-    <!-- Conteneur des 3 colonnes -->
-    <div class="grid grid-cols-3 items-center max-w-7xl mx-auto min-h-[300px]">
-        <!-- Colonne gauche -->
-        <div>
-            <h2 class="text-5xl font-extrabold leading-tight font-author">
-                DÉCOUVREZ<br>
-                VOTRE <span class="font-sugar text-red-500">FILM</span><br>
-                PRÉFÉRÉ.
-            </h2>
+    <footer class="
+bg-black/80
+backdrop-blur-xl
+border-t
+border-white/10
+text-white
+px-8
+py-16
+font-author
+">
 
-            <button class="mt-6 bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full font-semibold">
-                <a href="/tendances">C'est Parti!</a>
-            </button>
-        </div>
-        <!-- Colonne centrale -->
-        <div class="flex justify-center">
-            <img
-                class="h-64 object-contain drop-shadow-xl"
-                alt="Oscar"
-                src="/static/oscar.png"
-            >
-        </div>
-        <!-- Colonne droite -->
-        <div class="flex flex-col items-end">
-            <h3 class="text-xl font-semibold mb-4">Navigation</h3>
+    <div class="max-w-7xl mx-auto">
 
-            <ul class="space-y-2 text-sm text-right">
-                <li class="hover:text-gray-300 cursor-pointer"><a href="/">Accueil</a></li>
-                <li class="hover:text-gray-300 cursor-pointer"><a href="/films">Catalogue</a></li>
-                {% if utilisateur == none %}
-                <li class="hover:text-gray-300 cursor-pointer"><a href="/connexion">Connexion</a></li>
-                <li class="hover:text-gray-300 cursor-pointer"><a href="/creer_compte">Créer un compte</a></li>
-                {% else %}
-                <li class="hover:text-gray-300 cursor-pointer"><a href="/deconnexion">Déconnexion</a></li>
-                {% endif %}
-            </ul>
+        <!-- CONTENU -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-16 items-center">
+
+            <!-- GAUCHE -->
+            <div class="text-center md:text-left">
+
+                <h2 class="
+                text-5xl
+                font-extrabold
+                leading-tight
+                ">
+                    DÉCOUVREZ<br>
+
+                    VOTRE
+                    <span class="text-red-500 font-sugar">
+                        FILM
+                    </span><br>
+
+                    PRÉFÉRÉ.
+                </h2>
+
+                <p class="text-gray-300 mt-6 text-lg max-w-md">
+                    Explorez des milliers de films, découvrez les tendances
+                    et trouvez votre prochain coup de cœur cinéma.
+                </p>
+
+                <a href="/films">
+                    <button class="
+                    mt-8
+                    glass-btn
+                    px-8
+                    py-3
+                    font-semibold
+                    hover:scale-105
+                    transition
+                    duration-300
+                    ">
+                        Explorer 🎬
+                    </button>
+                </a>
+
+            </div>
+
+            <!-- CENTRE -->
+            <div class="flex justify-center">
+
+                <img
+                    src="/static/oscar.png"
+                    alt="Oscar"
+                    class="
+                    h-72
+                    object-contain
+                    hover:scale-110
+                    transition
+                    duration-500
+                    drop-shadow-[0_0_40px_rgba(255,0,0,.35)]
+                    "
+                >
+
+            </div>
+
+            <!-- DROITE -->
+            <div class="flex flex-col items-center md:items-end">
+
+                <h3 class="text-2xl font-bold mb-6">
+                    Navigation
+                </h3>
+
+                <ul class="space-y-4 text-gray-300 text-lg text-center md:text-right">
+
+                    <li>
+                        <a href="/"
+                        class="hover:text-red-400 transition">
+                            Accueil
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/films"
+                        class="hover:text-red-400 transition">
+                            Catalogue
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/series"
+                        class="hover:text-red-400 transition">
+                            Séries
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/tendances"
+                        class="hover:text-red-400 transition">
+                            Tendances
+                        </a>
+                    </li>
+
+                    {% if utilisateur == none %}
+
+                    <li>
+                        <a href="/connexion"
+                        class="hover:text-red-400 transition">
+                            Connexion
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/creer_compte"
+                        class="hover:text-red-400 transition">
+                            Créer un compte
+                        </a>
+                    </li>
+
+                    {% else %}
+
+                    <li>
+                        <a href="/deconnexion"
+                        class="hover:text-red-400 transition">
+                            Déconnexion
+                        </a>
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </div>
+
         </div>
+
+        <!-- LIGNE -->
+        <div class="w-full h-[1px] bg-white/10 my-12"></div>
+
+        <!-- BAS -->
+        <div class="
+        flex
+        flex-col
+        md:flex-row
+        justify-between
+        items-center
+        gap-4
+        text-gray-400
+        text-sm
+        ">
+
+            <p>
+                Cinéflix © 2026 · Tous droits réservés
+            </p>
+
+            <div class="flex gap-6">
+
+                <a href="#"
+                class="hover:text-red-400 transition">
+                    Instagram
+                </a>
+
+                <a href="#"
+                class="hover:text-red-400 transition">
+                    Twitter
+                </a>
+
+                <a href="#"
+                class="hover:text-red-400 transition">
+                    YouTube
+                </a>
+
+            </div>
+
+        </div>
+
     </div>
-    <!-- Bas de footer -->
-    <div class="mt-12 text-sm text-gray-400 text-left max-w-7xl mx-auto">
-        Cinéflix © 2026 · Tous droits réservés
-    </div>
+
 </footer>
+
 </body>
 </html>
