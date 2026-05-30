@@ -3,139 +3,256 @@
 
 {% block content %}
 
-<div class="w-full min-h-screen pt-20 bg-[#0b0f1a]  rounded-4xl border border-gray-800">
+<div class="w-full min-h-screen pt-8 md:pt-20 bg-[#0b0f1a] rounded-[2rem] md:rounded-4xl border border-gray-800 px-4 md:px-6">
 
     <!-- HEADER -->
-    <div class="max-w-6xl mx-auto mb-12">
-        <h1 class="text-4xl font-bold mb-2">Administration 🅰️</h1>
-        <p class="text-gray-400">Gérez les utilisateurs</p>
+    <div class="max-w-6xl mx-auto mb-8 md:mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Administration 🅰️</h1>
+        <p class="text-gray-400 text-sm md:text-base">Gérez les utilisateurs et les films</p>
     </div>
 
-    <div class="max-w-6xl mx-auto space-y-16">
+    <div class="max-w-6xl mx-auto space-y-12 md:space-y-16">
 
         <!-- SECTION USERS -->
         <section>
-            <h2 class="text-2xl font-semibold mb-6">👥 Utilisateurs</h2>
+            <h2 class="text-xl md:text-2xl font-semibold mb-6">👥 Utilisateurs</h2>
 
             <!-- LISTE USERS -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+
                 {% for user in db_users %}
-                <div class="bg-gray-900 p-5 rounded-2xl shadow-lg hover:scale-105 transition duration-300 flex flex-col items-center">
-                    
-                    <div class="w-16 h-16 bg-cyan-500 rounded-full flex items-center justify-center text-xl font-bold mb-3">
+                <div class="bg-gray-900 p-4 md:p-5 rounded-2xl shadow-lg hover:scale-105 transition duration-300 flex flex-col items-center">
+
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-cyan-500 rounded-full flex items-center justify-center text-lg md:text-xl font-bold mb-3">
                         {{ user["pseudo"][0]|upper }}
                     </div>
 
+                    <h3 class="font-medium text-center break-all">
+                        {{ user["pseudo"] }}
+                    </h3>
 
-                    <h3 class="font-medium">{{ user["pseudo"] }}</h3>
+                    <h3 class="text-sm text-gray-400">
+                        {{ user["role"] }}
+                    </h3>
 
-                    <h3 class="font-small">{{ user["role"] }}</h3>
-
-                    
                     <input type="hidden" name="username" value="{{ user['pseudo'] }}">
+
                     <form method="POST" action="/delete_user/{{ user['pseudo'] }}" class="mt-4">
-                    <button class="text-sm bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition">
-                        Supprimer 🗑️
-                    </button>
+                        <button class="text-sm bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition">
+                            Supprimer 🗑️
+                        </button>
                     </form>
 
                 </div>
                 {% endfor %}
+
             </div>
         </section>
 
         <!-- SECTION CREATE USER -->
         <section>
-            <h2 class="text-2xl font-semibold mb-6">Créer un utilisateur</h2>
 
-            <div class="bg-gray-900 p-8 rounded-2xl shadow-lg max-w-xl">
+            <h2 class="text-xl md:text-2xl font-semibold mb-6">
+                Créer un utilisateur
+            </h2>
+
+            <div class="bg-gray-900 p-5 md:p-8 rounded-2xl shadow-lg w-full max-w-xl">
 
                 <form method="POST" action="{{ url_for('creer_compte_admin') }}" class="flex flex-col gap-4">
 
-                    <input type="text" name="pseudo" placeholder="Nom d'utilisateur"
-                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+                    <input
+                        type="text"
+                        name="pseudo"
+                        placeholder="Nom d'utilisateur"
+                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none"
+                    >
 
-                    <input type="password" name="mdp" placeholder="Mot de passe"
-                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+                    <input
+                        type="password"
+                        name="mdp"
+                        placeholder="Mot de passe"
+                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none"
+                    >
 
-                    <input type="password" name="mdp_confirm" placeholder="Confirmer le mot de passe"
-                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+                    <input
+                        type="password"
+                        name="mdp_confirm"
+                        placeholder="Confirmer le mot de passe"
+                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none"
+                    >
 
-                    <button class="bg-green-600 hover:bg-green-700 py-3 rounded-full font-semibold transition" type="submit">
+                    <button
+                        class="bg-green-600 hover:bg-green-700 py-3 rounded-full font-semibold transition"
+                        type="submit"
+                    >
                         Créer l'utilisateur
                     </button>
 
                 </form>
 
             </div>
+
         </section>
 
         <!-- Gestion des rôles -->
         <div>
-            <h2 class="text-2xl font-semibold mb-6 mt-16">🔐 Gestion des rôles</h2>
 
-            <div class="bg-gray-900 p-8 rounded-2xl shadow-lg max-w-xl">
+            <h2 class="text-xl md:text-2xl font-semibold mb-6 mt-12 md:mt-16">
+                🔐 Gestion des rôles
+            </h2>
+
+            <div class="bg-gray-900 p-5 md:p-8 rounded-2xl shadow-lg w-full max-w-xl">
+
                 <form method="POST" action="/change_role" class="flex flex-col gap-4">
-                    <select name="username" class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+
+                    <select
+                        name="username"
+                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none"
+                    >
                         {% for user in db_users %}
-                            <option value="{{ user['pseudo'] }}">{{ user['pseudo'] }}</option>
+                        <option value="{{ user['pseudo'] }}">
+                            {{ user['pseudo'] }}
+                        </option>
                         {% endfor %}
                     </select>
 
-                    <select name="role" class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none">
+                    <select
+                        name="role"
+                        class="px-4 py-3 rounded-full bg-gray-800 text-white focus:outline-none"
+                    >
                         <option value="user">Utilisateur🧙‍♂️</option>
                         <option value="admin">Administrateur👑</option>
                         <option value="moderator">Modérateur🖌️</option>
                     </select>
 
-                    <button class="bg-blue-600 hover:bg-blue-700 py-3 rounded-full font-semibold transition" type="submit">
+                    <button
+                        class="bg-blue-600 hover:bg-blue-700 py-3 rounded-full font-semibold transition"
+                        type="submit"
+                    >
                         Changer le rôle
                     </button>
+
                 </form>
 
-                
             </div>
+
         </div>
+
     </div>
 
-
     <!-- SECTION GESTION FILMS -->
-        <section class="pt-12">
-            <h2 class="text-2xl font-semibold mb-8">🎬 Catalogue des films</h2>
-            <div class="overflow-hidden rounded-[2.5rem] border border-gray-800 bg-[#1e2129] shadow-2xl">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-black/60">
-                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">Poster</th>
-                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">Titre</th>
-                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">Réalisateur</th>
-                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">Année</th>
-                                <th class="p-6 font-bold text-gray-400 uppercase text-xs tracking-widest text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-800/50">
-                            {% for film in films %}
-                            <tr class="hover:bg-white/5 transition duration-150">
-                                <td class="p-6">
-                                    <a href="{{ url_for('exemple_film', id=film['_id']) }}"> <img src="{{ film['poster'] }}" class="w-14 h-20 object-cover rounded-xl shadow-md hover:scale-105"> </a>
-                                </td>
-                                <td class="p-6 font-semibold text-white text-lg">{{ film["titre"] }}</td>
-                                <td class="p-6 text-gray-300">{{ film["producteur"] }}</td>
-                                <td class="p-6 text-gray-400 font-mono">{{ film["date"] }}</td>
-                                <td class="p-6 text-center">
-                                    <form action="{{ url_for('delete_film', id=film['_id']|string) }}" method="POST" onsubmit="return confirm('Supprimer ce film ?');">
-                                        <button type="submit" class="w-12 h-12 flex items-center justify-center bg-red-500/10 hover:scale-105 text-red-500 hover:bg-red-500 hover:text-white rounded-full transition mx-auto border border-red-500/20">
-                                            🗑️
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+    <section class="pt-12 max-w-6xl mx-auto">
+
+        <h2 class="text-xl md:text-2xl font-semibold mb-8">
+            🎬 Catalogue des films
+        </h2>
+
+        <div class="overflow-hidden rounded-[2rem] md:rounded-[2.5rem] border border-gray-800 bg-[#1e2129] shadow-2xl">
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full min-w-[700px] text-left border-collapse">
+
+                    <thead>
+                        <tr class="bg-black/60">
+                            <th class="p-4 md:p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">
+                                Poster
+                            </th>
+
+                            <th class="p-4 md:p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">
+                                Titre
+                            </th>
+
+                            <th class="p-4 md:p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">
+                                Réalisateur
+                            </th>
+
+                            <th class="p-4 md:p-6 font-bold text-gray-400 uppercase text-xs tracking-widest">
+                                Année
+                            </th>
+
+                            <th class="p-4 md:p-6 font-bold text-gray-400 uppercase text-xs tracking-widest text-center">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-800/50">
+
+                        {% for film in films %}
+                        <tr class="hover:bg-white/5 transition duration-150">
+
+                            <td class="p-4 md:p-6">
+                                <a href="{{ url_for('exemple_film', id=film['_id']) }}">
+                                    <img
+                                        src="{{ film['poster'] }}"
+                                        class="w-12 h-16 md:w-14 md:h-20 object-cover rounded-xl shadow-md hover:scale-105 transition"
+                                    >
+                                </a>
+                            </td>
+
+                            <td class="p-4 md:p-6 font-semibold text-white text-sm md:text-lg">
+                                {{ film["titre"] }}
+                            </td>
+
+                            <td class="p-4 md:p-6 text-gray-300 text-sm md:text-base">
+                                {{ film["producteur"] }}
+                            </td>
+
+                            <td class="p-4 md:p-6 text-gray-400 font-mono text-sm md:text-base">
+                                {{ film["date"] }}
+                            </td>
+
+                            <td class="p-4 md:p-6 text-center">
+
+                                <form
+                                    action="{{ url_for('delete_film', id=film['_id']|string) }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Supprimer ce film ?');"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="
+                                        w-10
+                                        h-10
+                                        md:w-12
+                                        md:h-12
+                                        flex
+                                        items-center
+                                        justify-center
+                                        bg-red-500/10
+                                        hover:scale-105
+                                        text-red-500
+                                        hover:bg-red-500
+                                        hover:text-white
+                                        rounded-full
+                                        transition
+                                        mx-auto
+                                        border
+                                        border-red-500/20
+                                        "
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
             </div>
-        </section>
+
+        </div>
+
+    </section>
+
 </div>
+
 {% endblock %}

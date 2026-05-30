@@ -1,5 +1,6 @@
 import os
 import uuid
+import random
 
 from flask import Flask, render_template, session, request, url_for, redirect
 
@@ -46,31 +47,35 @@ def role():
 
 @app.route("/")
 def index():
-    films = [{
-        "poster": "/static/poster/8c3f1f3d55be494c88c25525c501cf2f.jpg",
-        "titre": "Harry Potter",
-        "realisateur": "Christopher Columbus",
-        "date": "2001"
-    },{
-        "poster":  url_for('static', filename='/poster/59e9039a768d467f85afcecb2bd962f2.webp'),
-        "titre": "Star Wars",
-        "realisateur": "George Lucas",
-        "date": "1977"
-    },
-    {
-        "poster":  url_for('static', filename='/poster/15743638c8e441d693c6ca3d8377a25f.jpg'),
-        "titre": "Interstellar",
-        "realisateur": "Christopher Nolan",
-        "date": "2014"
-    },
-    ]
-    return render_template("index.html", films=films, utilisateur=utilisateur(), role=role())
+    films = list(films_collection.find({}))
+
+    # Sélectionne 4 films aléatoires
+    films_random = random.sample(films, min(4, len(films)))
+    
+    return render_template("index.html", films=films_random, utilisateur=utilisateur(), role=role())
 
 @app.route("/films")
 def films():
-    films = list(films_collection.find({}))
-    print(films[0]['poster'])
-    return render_template("films.html", films=films, utilisateur=utilisateur(), role=role())
+    # On récupère le paramètre "q" depuis l'URL
+    search_query = request.args.get("q")
+    
+    if search_query:
+        # Si une recherche est faite, on prend que ce qui est recherché
+        films_list = list(films_collection.find({"titre": {"$regex": search_query, "$options": "i"}}))
+    else:
+        # Sinon, on prend tout
+        films_list = list(films_collection.find({}))
+    
+    # Gestion du message d'erreur si rien n'est trouvé
+    error = "Aucun film trouvé." if search_query and not films_list else None
+    
+    return render_template(
+        "films.html", 
+        films=films_list, 
+        error=error,
+        utilisateur=utilisateur(), 
+        role=role()
+    )
 
 @app.route("/series")
 def series():
@@ -78,7 +83,33 @@ def series():
 
 @app.route("/tendances")
 def tendances():
-    return render_template("tendances.html", utilisateur=utilisateur(), role=role())
+    # On prend tous les films
+    films_list = list(films_collection.find({}))
+
+    # On les tries
+    tendances_list = []
+    for f in films_list:
+        # On récupère les commentaires de chaque film
+        id = f["_id"]
+        commentaires = list(comment_collection.find({"film_id": ObjectId(id)}))
+
+        if commentaires:
+            # Si le score est superieur a la moyenne on ajoute le film à la liste
+            scores = [c["score"] for c in commentaires]
+            score = int(sum(scores) / len(scores))
+            if score >= 60:
+                tendances_list.append(f)
+    
+    # Gestion du message d'erreur si rien n'est trouvé
+    error = "Aucun film trouvé." if len(tendances_list) == 0 else None
+    
+    return render_template(
+        "tendances.html", 
+        films=tendances_list, 
+        error=error,
+        utilisateur=utilisateur(), 
+        role=role()
+    )
 
 @app.route("/deconnexion")
 def deconnexion():
@@ -389,37 +420,14 @@ def like_review(id):
 
 @app.route("/delete_review/<id>", methods=["POST"])
 def delete_review(id):
-    # Sécurité : On vérifie que celui qui demande est bien admin
+    # Sécurité : On vérifie que celui qui demande est bien admin ou modérateur
     if role() in ['admin', 'moderator']:
         
         comment_collection.delete_one({"_id": ObjectId(id)})
         print(f"DEBUG: Film {id} supprimé")
     
-    # On redirige vers la page admin (ou la page où tu te trouves)
     return redirect(request.referrer)
-
-@app.route("/recherche", methods=["GET"])
-def recherche():
-    query = request.args.get("q")
-
-    if not query:
-        return redirect(url_for("films"))
-
-    # Recherche du film par titre (insensible à la casse)
-    film = films_collection.find_one({
-        "titre": {"$regex": query, "$options": "i"}
-    })
-
-    if film:
-        return redirect(url_for("exemple_film", id=str(film["_id"])))
-    else:
-        return render_template(
-            "films.html",
-            films=list(films_collection.find({})),
-            error="Aucun film trouvé.",
-            utilisateur=utilisateur(),
-            role=role()
-        )
+    
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

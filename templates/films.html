@@ -2,58 +2,114 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="bg-[#0b0f1a] border border-gray-800 w-full p-14 rounded-4xl">
+<div
+    class="
+    bg-[#0b0f1a]
+    border
+    border-gray-800
+    w-full
+    p-4
+    sm:p-6
+    md:p-10
+    lg:p-14
+    rounded-[2rem]
+    md:rounded-[3rem]
+    "
+>
 
-    <div class="w-full flex justify-between items-center mb-8">
-        <h1 class="text-5xl font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-            Découvrez vos films préférés <span class="inline-block ml-2">💖</span>
+    <div
+        class="
+        w-full
+        flex
+        flex-col
+        md:flex-row
+        justify-between
+        items-center
+        gap-6
+        mb-8
+        "
+    >
+
+        <h1
+            class="
+            text-3xl
+            sm:text-4xl
+            md:text-5xl
+            font-bold
+            text-center
+            md:text-left
+            drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]
+            "
+        >
+            Découvrez notre liste de films
+            <span class="inline-block ml-2">💖</span>
         </h1>
 
-        <div class="relative inline-block text-left">
-    <select class="bg-[#2D2D3A]/70 backdrop-blur-md text-white px-6 py-2 rounded-full border border-white/10 outline-none appearance-none pr-10 cursor-pointer hover:bg-[#3D3D4A]/70 transition glass">
-        
-        <option value="" class="bg-black text-white">
-            Choisir ↓
-        </option>
-
-        <option value="action" class="bg-black text-white">
-            Action
-        </option>
-
-        <option value="drame" class="bg-black text-white">
-            Drame
-        </option>
-
-        <option value="comedie" class="bg-black text-white">
-            Comédie
-        </option>
-
-        <option value="sf" class="bg-black text-white">
-            Science-Fiction
-        </option>
-
-    </select>
-</div>
     </div>
 
     <!-- CONTENEUR DES FILMS -->
-    <div class="flex gap-8 flex-wrap">
+    <div
+        class="
+        grid
+        grid-cols-2
+        md:grid-cols-3
+        xl:grid-cols-5
+        gap-6
+        md:gap-8
+        "
+    >
 
         {% for film in films %}
-        <article class="flex flex-col items-center break-words w-40">
-            
-            <div class="w-40">
+        <article
+            class="
+            flex
+            flex-col
+            items-center
+            break-words
+            w-full
+            "
+        >
+
+            <div class="w-full">
+
                 <a href="{{ url_for('exemple_film', id=film['_id']) }}">
-                <img src="{{ film['poster'] }}" 
-                    alt="poster du film" 
-                    class="w-full h-full object-cover rounded-[2rem] shadow-md hover:scale-105 transition duration-300">
+
+                    <img
+                        src="{{ film['poster'] }}"
+                        alt="poster du film"
+                        class="
+                        w-full
+                        h-[220px]
+                        sm:h-[280px]
+                        md:h-[320px]
+                        lg:h-[380px]
+                        object-cover
+                        rounded-[2rem]
+                        shadow-md
+                        hover:scale-105
+                        transition
+                        duration-300
+                        "
+                    >
+
                 </a>
+
             </div>
 
-            <div class="text-center mt-2">
-                <h3 class="text-red-700 font-medium leading-tight"> {{ film["titre"] }} </h3>
-                <h4 class="text-red-700 text-sm"> {{ film["producteur"] }} </h4>
-                <h4 class="text-red-700 text-sm opacity-80"> {{ film["date"] }} </h4>
+            <div class="text-center mt-3">
+
+                <h3 class="text-red-700 font-medium leading-tight">
+                    {{ film["titre"] }}
+                </h3>
+
+                <h4 class="text-red-700 text-sm">
+                    {{ film["producteur"] }}
+                </h4>
+
+                <h4 class="text-red-700 text-sm opacity-80">
+                    {{ film["date"] }}
+                </h4>
+
             </div>
 
         </article>

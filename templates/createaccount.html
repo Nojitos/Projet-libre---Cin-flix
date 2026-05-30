@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="min-h-[90vh] flex items-center justify-center px-6">
+<div class="min-h-[90vh] flex items-center justify-center px-4 sm:px-6 py-6">
 
     <div class="
     relative
@@ -12,8 +12,11 @@
     border-gray-800
     w-full
     max-w-[520px]
-    p-10
-    rounded-[2.5rem]
+    p-6
+    sm:p-8
+    md:p-10
+    rounded-[2rem]
+    md:rounded-[2.5rem]
     overflow-hidden
     ">
 
@@ -22,10 +25,15 @@
         absolute
         -top-20
         -left-20
-        w-72
-        h-72
+        w-48
+        h-48
+        sm:w-60
+        sm:h-60
+        md:w-72
+        md:h-72
         bg-red-600/20
-        blur-[110px]
+        blur-[80px]
+        md:blur-[110px]
         rounded-full
         ">
         </div>
@@ -40,7 +48,9 @@
                 src="/static/oscar.png"
 
                 class="
-                h-24
+                h-16
+                sm:h-20
+                md:h-24
                 object-contain
                 drop-shadow-[0_0_20px_rgba(255,0,0,.4)]
                 ">
@@ -50,7 +60,9 @@
             <!-- TITRE -->
 
             <h1 class="
-            text-5xl
+            text-3xl
+            sm:text-4xl
+            md:text-5xl
             font-bold
             text-center
             mb-3
@@ -63,8 +75,10 @@
             <p class="
             text-center
             text-gray-300
-            text-lg
-            mb-10
+            text-base
+            md:text-lg
+            mb-8
+            md:mb-10
             ">
 
                 Créez votre compte pour retrouver
@@ -82,15 +96,19 @@
             border-red-500/30
             text-red-400
             rounded-2xl
-            px-5
+            px-4
+            md:px-5
             py-4
-            mb-8
+            mb-6
+            md:mb-8
             flex
             items-center
+            text-sm
+            md:text-base
             ">
 
                 <svg
-                class="w-5 h-5 mr-3"
+                class="w-5 h-5 mr-3 flex-shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20">
 
@@ -124,7 +142,7 @@
             method="POST"
             action="{{ url_for('creer_compte') }}"
 
-            class="space-y-6">
+            class="space-y-5 md:space-y-6">
 
                 <!-- PSEUDO -->
 
@@ -147,8 +165,10 @@
                     glass
                     flex
                     items-center
-                    px-5
-                    py-4
+                    px-4
+                    md:px-5
+                    py-3
+                    md:py-4
                     ">
 
                         <img
@@ -179,6 +199,8 @@
                         w-full
                         text-white
                         placeholder-gray-400
+                        text-sm
+                        md:text-base
                         "
 
                         required>
@@ -208,8 +230,10 @@
                     glass
                     flex
                     items-center
-                    px-5
-                    py-4
+                    px-4
+                    md:px-5
+                    py-3
+                    md:py-4
                     ">
 
                         <img
@@ -240,6 +264,8 @@
                         w-full
                         text-white
                         placeholder-gray-400
+                        text-sm
+                        md:text-base
                         "
 
                         required>
@@ -269,8 +295,10 @@
                     glass
                     flex
                     items-center
-                    px-5
-                    py-4
+                    px-4
+                    md:px-5
+                    py-3
+                    md:py-4
                     ">
 
                         <img
@@ -302,6 +330,8 @@
                         w-full
                         text-white
                         placeholder-gray-400
+                        text-sm
+                        md:text-base
                         "
 
                         required>
@@ -319,8 +349,10 @@
                 class="
                 glass-btn
                 w-full
-                py-4
-                text-lg
+                py-3
+                md:py-4
+                text-base
+                md:text-lg
                 font-bold
                 hover:scale-[1.02]
                 transition
@@ -336,9 +368,12 @@
             <!-- LOGIN -->
 
             <div class="
-            mt-8
+            mt-6
+            md:mt-8
             text-center
             text-gray-400
+            text-sm
+            md:text-base
             ">
 
                 Vous avez déjà un compte ?
