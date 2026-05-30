@@ -26,15 +26,18 @@
                         {{ user["pseudo"][0]|upper }}
                     </div>
 
+
                     <h3 class="font-medium">{{ user["pseudo"] }}</h3>
 
+                    <h3 class="font-small">{{ user["role"] }}</h3>
+
                     
-                        <input type="hidden" name="username" value="{{ user['pseudo'] }}">
-                        <form method="POST" action="/delete_user/{{ user['pseudo'] }}" class="mt-4">
-                        <button class="text-sm bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition">
-                            Supprimer 🗑️
-                        </button>
-                        </form>
+                    <input type="hidden" name="username" value="{{ user['pseudo'] }}">
+                    <form method="POST" action="/delete_user/{{ user['pseudo'] }}" class="mt-4">
+                    <button class="text-sm bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition">
+                        Supprimer 🗑️
+                    </button>
+                    </form>
 
                 </div>
                 {% endfor %}
