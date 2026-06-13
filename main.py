@@ -27,7 +27,7 @@ DOSSIER_POSTER = os.path.join('static', 'poster')
 
 def utilisateur():
     """
-    Renvoir le nom de l'utilisatuer si il est connecté, None sinon
+    Renvoie le nom de l'utilisatuer si il est connecté, None sinon
     """
     #Changer le nom de la clé "utilisateur" par "utilisateur_connecte" pour être plus clair
     if "utilisateur" in session:
@@ -41,7 +41,7 @@ def role():
     """
     # L'utilisateur doit être connecté
     if utilisateur() is not None :
-        user=db_users.find_one({"pseudo":session["utilisateur"]})
+        user=db_users.find_one({"pseudo":utilisateur()})
         return user["role"]
     return False
 
@@ -77,10 +77,6 @@ def films():
         role=role()
     )
 
-@app.route("/series")
-def series():
-    return render_template("series.html", utilisateur=utilisateur(), role=role())
-
 @app.route("/tendances")
 def tendances():
     # On prend tous les films
@@ -94,7 +90,7 @@ def tendances():
         commentaires = list(comment_collection.find({"film_id": ObjectId(id)}))
 
         if commentaires:
-            # Si le score est superieur a la moyenne on ajoute le film à la liste
+            # Si le score est superieur a 60 on ajoute le film à la liste
             scores = [c["score"] for c in commentaires]
             score = int(sum(scores) / len(scores))
             if score >= 60:
@@ -176,12 +172,6 @@ def creer_compte():
         session["utilisateur"] = request.form['pseudo']
 
         return redirect(url_for('index'))
-
-
-@app.route("/testfilm")
-def testfilm():
-    film = films_collection.find_one()
-    return render_template("exemplefilm.html", film=film)
 
 @app.route("/admin")
 def admin_route():
@@ -315,10 +305,7 @@ def ajouter_film():
         # Sauvegarde image
         image.save(chemin_disque)
 
-        # Chemin web (IMPORTANT pour HTML / MongoDB)
-        chemin_web = chemin_disque
-
-        # Film à insérer en base
+        # Film à insérer dans la bdd
         film = {
             "titre": request.form["titre"],
             "date": request.form["date"],
@@ -328,7 +315,7 @@ def ajouter_film():
             "studio": request.form["studio"],
             "producteur": request.form["producteur"],
             "acteurs": request.form["acteurs"],
-            "poster": chemin_web
+            "poster": chemin_disque
         }
 
         films_collection.insert_one(film)
